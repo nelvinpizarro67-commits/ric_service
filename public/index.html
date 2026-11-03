@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIC SERVICE Taller Mecánico Automotriz - Oruro</title>
+    <!-- Bootstrap: primero la copia local (funciona sin internet tras npm install), si no existe se usa internet -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!--
+    ==================================================================
+     GUÍA DE ESTE ARCHIVO
+     Busca con Ctrl+F la palabra INICIO o FIN para saltar entre bloques.
+     Estos comentarios aparecen en verde en editores como VS Code.
+    ==================================================================
+
+     PARTE A: DISEÑO (CSS, dentro de la etiqueta style)
+       A1  PALETA DE COLORES ............ aquí cambias los colores de todo el sitio
+       A2  BASE Y TIPOGRAFÍA
+       A3  LOGO
+       A4  BARRA DE NAVEGACIÓN
+       A5  PORTADA
+       A6  TARJETAS DE SERVICIOS
+       A7  SECCIONES: ESTADÍSTICAS, FOTOS, HISTORIA
+       A8  SECCIÓN: POR QUÉ ELEGIRNOS
+       A9  PIE DE PÁGINA
+       A10 PANTALLAS DE CONSULTA, ACCESO Y PANEL
+       A11 FORMULARIOS Y BOTONES
+       A12 MENÚ DEL PANEL
+       A13 VERSIÓN PARA CELULAR
+
+     PARTE B: CONTENIDO (HTML, dentro de body)
+       B1  SITIO PÚBLICO (navegación, portada, servicios, fotos, motivos, pie)
+       B2  PANTALLA: CONSULTAR ESTADO DEL VEHÍCULO
+       B3  PANTALLA: ACCESO DEL PERSONAL
+       B4  PANTALLA: PANEL DE REGISTROS
+
+     PARTE C: FUNCIONAMIENTO (JavaScript, al final)
+       C1  CONFIGURACIÓN (usuario, clave, estados)
+       C2  FORMULARIOS: CLIENTES, DIAGNÓSTICO, HISTORIAL, MECÁNICOS,
+           EMPLEADOS, VEHÍCULOS, REPARACIONES, ORDEN DE TRABAJO
+       C3  BASE DE DATOS DEL NAVEGADOR
+       C4  CAMBIO DE PANTALLAS Y ACCESO
+       C5  PANEL (dibuja formularios y tabla de registros)
+       C6  CONSULTA PÚBLICA
+       C7  LOGO
+       C8  LOGO INCRUSTADO (última línea del archivo)
+    ==================================================================
+    -->
+
+    <style>
+        /* ==============================================================
+           INICIO A1: PALETA DE COLORES
+           Estos colores salen de tu logo. Cambia un valor aquí y se
+           actualiza todo el sitio (botones, tarjetas, menús, formularios).
+           ============================================================== */
+        :root {
+            --negro: #01060f;               /* fondo principal (igual al fondo del logo) */
+            --azul-noche: #071226;          /* fondo de secciones y tarjetas */
+            --azul: #092e5c;                /* azul del uniforme */
+            --azul-claro: #14478a;          /* azul para resaltar */
+            --dorado: #f6bd40;              /* dorado principal */
+            --dorado-rgb: 246, 189, 64;     /* el mismo dorado en formato RGB */
+            --dorado-claro: #ffd97a;        /* dorado brillante */
+            --dorado-oscuro: #ce901e;       /* dorado profundo */
+            --plata: #dfe1dc;               /* plata de la palabra SERVICE */
+            --texto: #e9edf5;               /* texto normal */
+            --texto-suave: #a9b6cc;         /* texto secundario */
+            --degradado-oro: linear-gradient(135deg, var(--dorado-claro), var(--dorado) 45%, var(--dorado-oscuro));
+
+            /* Foto de fondo de portada y pantallas de acceso.
+               Para usar tu propia foto pon: url("img/auto.jpg") */
+            --foto-taller: url("img/herramientas.webp");
+        }
+
+        
+        html[data-bs-theme="dark"] {
+            --bs-body-bg: var(--negro);
+            --bs-body-color: var(--texto);
+            --bs-secondary-color: var(--texto-suave);
+            --bs-border-color: rgba(var(--dorado-rgb), .25);
+            --bs-primary-rgb: var(--dorado-rgb);
+            --bs-warning-rgb: var(--dorado-rgb);
+            --bs-link-color-rgb: var(--dorado-rgb);
+            --bs-link-hover-color-rgb: 255, 217, 122;
+        }
+        /* ==================== FIN A1: PALETA DE COLORES ==================== */
+
+
+        /* ==============================================================
+           INICIO A2: BASE Y TIPOGRAFÍA
+           ============================================================== */
+        html { scroll-behavior: smooth; min-height: 100%; }
+        body {
+            margin: 0;
+            min-height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--negro);
+            color: var(--texto);
+        }
+        [id] { scroll-margin-top: var(--nav-h, 90px); }
+        .text-suave { color: var(--texto-suave); }
+        .text-dorado { color: var(--dorado); }
+        /* ==================== FIN A2: BASE Y TIPOGRAFÍA ==================== */
+
+
+        /* ==============================================================
+           INICIO A3: LOGO
+           Tamaños del logo en cada lugar donde aparece.
+           ============================================================== */
+        .logo { display: block; height: auto; }
+        .logo-nav { width: 58px; height: 58px; border-radius: 12px; }
+        .logo-hero { width: min(340px, 80vw); border-radius: 28px; }
+        .logo-side { width: min(260px, 100%); }
+        .logo-footer { width: 72px; height: 72px; border-radius: 14px; }
+        .logo-marco {                     
+            display: inline-block;
+            border-radius: 28px;
+            overflow: hidden;
+            
+        }
+        .logo-marco .logo { border-radius: 0; }
+        /* ==================== FIN A3: LOGO ==================== */
+
+
+        /* ==============================================================
+           INICIO A4: BARRA DE NAVEGACIÓN
+           ============================================================== */
+        .navbar-custom {
+            --bs-navbar-color: var(--plata);
+            --bs-navbar-hover-color: var(--dorado);
+            --bs-navbar-active-color: var(--dorado);
+            background: var(--negro);
+            border-bottom: 2px solid var(--dorado);
+            box-shadow: 0 6px 24px rgba(0,0,0,.55);
+        }
+        .navbar-custom .nav-link { font-weight: 600; letter-spacing: .3px; transition: color .3s; }
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .nav-link.active { color: var(--dorado); }
+        .brand-nombre { color: var(--dorado); font-weight: 800; letter-spacing: 1px; line-height: 1; }
+        .brand-lema { color: var(--plata); font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; }
+        .navbar-toggler { border-color: rgba(var(--dorado-rgb), .6); }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23f6bd40' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        /* ==================== FIN A4: BARRA DE NAVEGACIÓN ==================== */
+
+
+        /* ==============================================================
+           INICIO A5: PORTADA
+           ============================================================== */
+        .hero-section {
+            position: relative; overflow: hidden; isolation: isolate;
+            background: linear-gradient(#01060F, #071226);
+            padding: 70px 0 90px;
+            text-align: center;
+            border-bottom: 3px solid var(--dorado);
+        }
+        .hero-title { font-weight: 800; color: var(--plata); letter-spacing: 1px; margin-top: 1.8rem; }
+        .hero-title span { color: var(--dorado); }
+        .hero-sub { color: var(--texto-suave); max-width: 720px; margin: 0 auto 1.8rem; font-size: 1.1rem; }
+        /* ==================== FIN A5: PORTADA ==================== */
+
+
+        /* ==============================================================
+           INICIO A6: TARJETAS DE SERVICIOS
+           ============================================================== */
+        .bloque-oscuro { background: var(--azul-noche); }
+        .stat-card {
+            background: linear-gradient(160deg, #0d1c3b, var(--azul-noche));
+            border: 1px solid rgba(var(--dorado-rgb), .22);
+            border-top: 4px solid var(--dorado);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.4);
+            transition: transform .3s, box-shadow .3s;
+        }
+        .stat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.5), 0 0 30px rgba(var(--dorado-rgb), .12); }
+        .stat-icon { font-size: 2.6rem; color: var(--dorado); margin-bottom: 1rem; }
+        .stat-card h4 { color: var(--plata); }
+        /* ==================== FIN A6: TARJETAS DE SERVICIOS ==================== */
+
+
+        /* ==============================================================
+           INICIO A7: SECCIONES ESTADÍSTICAS, FOTOS E HISTORIA
+           ============================================================== */
+        .etiqueta {
+            display: inline-block;
+            padding: .4rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(var(--dorado-rgb), .5);
+            background: rgba(var(--dorado-rgb), .08);
+            color: var(--dorado);
+            font-weight: 600;
+            font-size: .85rem;
+            letter-spacing: .5px;
+        }
+        .seccion-titulo { color: var(--plata); font-weight: 800; margin-top: .6rem; }
+        .seccion-titulo::after {
+            content: "";
+            display: block;
+            width: 70px; height: 4px;
+            margin: .7rem auto 0;
+            border-radius: 4px;
+            background: var(--degradado-oro);
+        }
+        .tarjeta-oscura {
+            background: linear-gradient(160deg, #0b1a36, var(--azul-noche));
+            border: 1px solid rgba(var(--dorado-rgb), .2);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.35);
+        }
+        .tarjeta-oscura h5 { color: var(--plata); }
+        .foto-box { position: relative; margin: auto; height: 260px; width: 100%; }
+        .foto-placeholder {
+            height: 100%; width: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: rgba(255,255,255,.03);
+            border: 2px dashed rgba(var(--dorado-rgb), .35);
+            border-radius: 12px;
+            color: var(--texto-suave);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .foto-placeholder i { font-size: 2.5rem; margin-bottom: .5rem; color: var(--dorado); }
+        .info-box {
+            background: rgba(255,255,255,.04);
+            border-left: 3px solid var(--dorado);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--texto-suave);
+            font-size: .9rem;
+        }
+        .info-box strong { color: var(--plata); }
+        .foto-real { height: 100%; width: 100%; object-fit: cover; border-radius: 12px; display: block; }
+        .foto-galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; height: 100%; }
+        .foto-galeria img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+        .foto-logo-box { background: #01060f; display: flex; align-items: center; justify-content: center; }
+        .foto-logo-box img { max-height: 92%; max-width: 92%; width: auto; height: auto; object-fit: contain; }
+        /* ==================== FIN A7: SECCIONES ESTADÍSTICAS, FOTOS E HISTORIA ==================== */
+
+
+        /* ==============================================================
+           INICIO A8: SECCIÓN POR QUÉ ELEGIRNOS
+           ============================================================== */
+        .motivo-card {
+            height: 100%;
+            padding: 1.6rem;
+            background: linear-gradient(160deg, #0d1c3b, var(--azul-noche));
+            border: 1px solid rgba(var(--dorado-rgb), .22);
+            border-radius: 16px;
+            position: relative;
+            transition: transform .3s;
+        }
+        .motivo-card:hover { transform: translateY(-5px); }
+        .step-number {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: var(--degradado-oro);
+            color: #000;
+            font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 16px rgba(var(--dorado-rgb), .35);
+        }
+        .motivo-card h5 { color: var(--plata); font-weight: 700; }
+        /* ==================== FIN A8: SECCIÓN POR QUÉ ELEGIRNOS ==================== */
+
+
+        /* ==============================================================
+           INICIO A9: PIE DE PÁGINA
+           ============================================================== */
+        .footer-ric {
+            background: var(--negro);
+            border-top: 2px solid var(--dorado);
+            color: var(--texto-suave);
+        }
+        .footer-ric .brand-nombre { font-size: 1.2rem; }
+        /* ==================== FIN A9: PIE DE PÁGINA ==================== */
+
+
+        /* ==============================================================
+           INICIO A9.1: SECCIÓN DE CONTACTO
+           ============================================================== */
+        .contacto-card {
+            background: linear-gradient(160deg, #0d1c3b, var(--azul-noche));
+            border: 1px solid rgba(var(--dorado-rgb), .25);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.4);
+        }
+        .contacto-logo {
+            width: min(200px, 100%);
+            border-radius: 22px;
+            box-shadow: 0 0 0 2px rgba(var(--dorado-rgb), .5), 0 20px 45px rgba(0,0,0,.6);
+        }
+        .contacto-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(var(--dorado-rgb), .15);
+            color: var(--texto);
+            text-decoration: none;
+        }
+        .contacto-item:last-child { border-bottom: none; }
+        .contacto-item:hover { color: var(--dorado); }
+        .contacto-item .bi {
+            font-size: 1.4rem;
+            color: var(--dorado);
+            width: 34px;
+            flex: 0 0 auto;
+            text-align: center;
+        }
+        .contacto-item .etq-contacto {
+            display: block;
+            font-size: .72rem;
+            color: var(--texto-suave);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        /* ==================== FIN A9.1: SECCIÓN DE CONTACTO ==================== */
+
+
+        /* ==============================================================
+           INICIO A10: PANTALLAS DE CONSULTA, ACCESO Y PANEL
+           (la columna izquierda con foto y la tarjeta de la derecha)
+           ============================================================== */
+        .login-page {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 10%, #0c2350 0%, var(--negro) 60%);
+        }
+        .login-image {
+            background-image: var(--foto-taller);
+            background-position: center center;
+            background-size: cover;
+            min-height: 100vh;
+            position: relative;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(1,6,15,.9), rgba(7,18,38,.8));
+            display: flex;
+            align-items: center;
+            gap: 35px;
+            padding: 40px 60px;
+        }
+        .contenido { color: var(--texto); max-width: 460px; flex: 1 1 auto; min-width: 0; }
+        .contenido h3 { color: var(--dorado); font-weight: 800; }
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            padding: 45px;
+            border-radius: 24px;
+            background: rgba(7,18,38,.94);
+            border: 1px solid rgba(var(--dorado-rgb), .35);
+            box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 50px rgba(var(--dorado-rgb), .08);
+        }
+        .login-card h2 { color: var(--plata); font-weight: 800; }
+        .login-card p { color: var(--texto-suave); }
+        .panel-card { max-width: 540px; padding: 35px; }
+        .icono {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            margin: auto;
+            background: var(--degradado-oro);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 45px;
+            color: #000;
+            box-shadow: 0 15px 25px rgba(0,0,0,.4), 0 0 30px rgba(var(--dorado-rgb), .25);
+        }
+        .titulo-form {
+            display: inline-block;
+            padding: .75rem 1.5rem;
+            border-radius: .6rem;
+            background: var(--degradado-oro);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.35);
+        }
+        .resultado {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(var(--dorado-rgb), .25);
+            border-left: 4px solid var(--dorado);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+        .resultado .etq { font-size: .72rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; margin-top: .6rem; }
+        .resultado .etq:first-child { margin-top: 0; }
+        /* ===== Panel: lista de registros, elección múltiple e historial ===== */
+        .records-box { max-height: 380px; overflow: auto; }
+        .reg-item { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; background: rgba(255,255,255,.04); border: 1px solid rgba(var(--dorado-rgb), .2); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+        .reg-main { min-width: 0; }
+        .reg-title { font-weight: 700; font-size: .92rem; word-break: break-word; }
+        .reg-det { font-size: .78rem; color: var(--texto-suave); line-height: 1.5; word-break: break-word; }
+        .reg-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+        .multi-box { max-height: 210px; overflow: auto; border: 1px solid rgba(var(--dorado-rgb), .3); border-radius: 12px; padding: 6px; background: rgba(0,0,0,.25); }
+        .multi-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 8px; cursor: pointer; font-size: .85rem; margin: 0; }
+        .multi-item:hover { background: rgba(var(--dorado-rgb), .12); }
+        .multi-item input { width: 18px; height: 18px; accent-color: var(--dorado); flex: 0 0 auto; }
+        .multi-item span { flex: 1; }
+        .multi-item em { font-style: normal; color: var(--dorado); font-size: .78rem; white-space: nowrap; }
+        .rol-badge { font-size: .72rem; padding: .45em .8em; border-radius: 50rem; }
+        .rol-jefe { background: var(--degradado-oro); color: #000; }
+        .rol-emp { background: rgba(255,255,255,.12); color: var(--texto); border: 1px solid rgba(255,255,255,.25); }
+        .stat-mini { background: rgba(var(--dorado-rgb), .08); border: 1px solid rgba(var(--dorado-rgb), .3); border-radius: 12px; padding: 10px 12px; height: 100%; }
+        .stat-mini .etq, .resumen-periodo .etq { font-size: .68rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-mini .val { font-weight: 800; color: var(--dorado); font-size: 1.02rem; }
+        .resumen-periodo { background: rgba(255,255,255,.05); border-left: 4px solid var(--dorado); border-radius: 10px; padding: 10px 14px; }
+        .linea-res { display: flex; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: .85rem; color: var(--texto); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.06); }
+        .mes-fila:hover, .mes-fila.sel { background: rgba(var(--dorado-rgb), .15); color: var(--texto); }
+        .info-auto { line-height: 1.5; }
+        #c-placa { letter-spacing: 4px; font-weight: 700; }
+        /* ===== Inventario de repuestos, orden de trabajo y ganancias ===== */
+        .chip-st { border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.06); color: var(--texto); border-radius: 50rem; padding: 4px 12px; font-size: .78rem; font-weight: 700; }
+        .chip-st.st-ok { border-color: #198754; color: #7ee0a5; }
+        .chip-st.st-pocos { border-color: #ffc107; color: #ffd75e; }
+        .chip-st.st-agotado { border-color: #dc3545; color: #ff8f9a; }
+        .chip-st.sel { background: var(--degradado-oro); color: #000; border-color: transparent; }
+        .reg-item.st-ok { border-left: 5px solid #198754; }
+        .reg-item.st-pocos { border-left: 5px solid #ffc107; background: rgba(255,193,7,.08); }
+        .reg-item.st-agotado { border-left: 5px solid #dc3545; background: rgba(220,53,69,.12); }
+        .obs-box { background: rgba(255,255,255,.05); border: 1px dashed rgba(var(--dorado-rgb), .4); border-radius: 12px; padding: 10px 12px; font-size: .85rem; }
+        .resumen-orden { background: rgba(var(--dorado-rgb), .08); border: 1px solid rgba(var(--dorado-rgb), .35); border-radius: 12px; padding: 8px; }
+        .total-linea { border-top: 1px solid rgba(var(--dorado-rgb), .5); margin-top: 4px; font-size: 1rem; color: var(--dorado); }
+        .rep-item { border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 4px; }
+        .rep-det { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 0 8px 4px 34px; font-size: .75rem; }
+        .rep-qty { width: 78px; }
+        .multi-item.agotado { opacity: .55; cursor: not-allowed; }
+        .fila-ganancia { display: block; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.08); color: var(--texto); text-decoration: none; }
+        a.fila-ganancia:hover { background: rgba(var(--dorado-rgb), .12); color: var(--texto); }
+        /* ===== Portada: carrusel de fotos transparentes ===== */
+        .hero-carrusel { position: absolute; inset: 0; z-index: -2; }
+        .hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 2s ease; animation: zoomHero 18s ease-in-out infinite alternate; }
+        .hero-slide.activa { opacity: .45; }
+        @keyframes zoomHero { from { transform: scale(1); } to { transform: scale(1.14); } }
+        .hero-section::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at center, rgba(1,6,15,.35), rgba(1,6,15,.88)), linear-gradient(rgba(1,6,15,.45), rgba(1,6,15,.85)); }
+        .hero-puntos { position: absolute; bottom: 16px; left: 0; right: 0; display: flex; justify-content: center; gap: 9px; z-index: 3; }
+        .hero-punto { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--dorado); background: transparent; padding: 0; cursor: pointer; transition: all .3s; }
+        .hero-punto.activa { background: var(--dorado); transform: scale(1.25); }
+        @media (prefers-reduced-motion: reduce) { .hero-slide { animation: none; } }
+
+        /* ===== Gestión de usuarios, niveles de mano de obra y detalles ===== */
+        .ayuda-panel { background: rgba(var(--dorado-rgb), .08); border-left: 4px solid var(--dorado); border-radius: 10px; padding: 10px 14px; font-size: .8rem; margin-bottom: 14px; line-height: 1.5; }
+        .nivel-det { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 8px 8px 34px; }
+        .nivel-pill { position: relative; margin: 0; }
+        .nivel-pill input { position: absolute; opacity: 0; pointer-events: none; }
+        .nivel-pill span { display: inline-block; border: 1px solid rgba(255,255,255,.25); border-radius: 50rem; padding: 3px 11px; font-size: .72rem; cursor: pointer; color: var(--texto-suave); transition: all .15s; }
+        .nivel-pill input:checked + span { color: #000; font-weight: 800; }
+        .nivel-pill.nv-ligero input:checked + span { background: #7ee0a5; border-color: #7ee0a5; }
+        .nivel-pill.nv-normal input:checked + span { background: var(--dorado); border-color: var(--dorado); }
+        .nivel-pill.nv-pesado input:checked + span { background: #ff8f9a; border-color: #ff8f9a; }
+        .nivel-tag { display: inline-block; border-radius: 50rem; padding: 1px 9px; font-size: .72rem; font-weight: 700; border: 1px solid; margin: 1px 0; }
+        .nivel-tag.nv-ligero { color: #7ee0a5; border-color: #7ee0a5; }
+        .nivel-tag.nv-normal { color: var(--dorado); border-color: var(--dorado); }
+        .nivel-tag.nv-pesado { color: #ff8f9a; border-color: #ff8f9a; }
+        .mapa-taller { text-align: center; }
+        .mapa-taller iframe { width: 100%; height: 340px; border: 2px solid rgba(var(--dorado-rgb), .5); border-radius: 18px; background: #0b1424; filter: saturate(.9) contrast(1.02); }
+        .contacto-item[href] { text-decoration: none; }
+        .reg-item.st-admin { border-left: 5px solid var(--dorado); }
+        .srv-item { border-bottom: 1px solid rgba(255,255,255,.05); }
+        input[data-kind="nombre"], input[data-kind="letras"], input[data-kind="texto"], input[data-kind="libre"], textarea[data-kind="libre"] { text-transform: uppercase; }
+        .reg-item { transition: transform .15s, box-shadow .15s; }
+        .reg-item:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+        .btn-menu { transition: all .2s; }
+        #demo-banner { position: fixed; right: 10px; bottom: 10px; max-width: 360px; z-index: 2000; background: rgba(59,42,0,.94); color: #ffe9a8; border: 1px solid var(--dorado); border-radius: 12px; font-size: .72rem; padding: 7px 34px 7px 12px; line-height: 1.35; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+        #demo-banner button { position: absolute; top: 3px; right: 6px; background: none; border: 0; color: #ffe9a8; font-size: .9rem; line-height: 1; cursor: pointer; }
+        #demo-banner a { color: #fff; text-decoration: underline; margin-left: 8px; }
+
+        .records-box { max-height: 240px; overflow: auto; }
+        .records-box table { font-size: .8rem; }
+        .records-box thead th { color: var(--dorado); white-space: nowrap; }
+        /* ==================== FIN A10: PANTALLAS DE CONSULTA, ACCESO Y PANEL ==================== */
+
+
+        /* ==============================================================
+           INICIO A11: FORMULARIOS Y BOTONES
+           ============================================================== */
+        .form-control, .form-select {
+            border-radius: 12px;
+            background-color: var(--negro);
+            border: 1px solid rgba(var(--dorado-rgb), .28);
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: var(--negro);
+            border-color: var(--dorado);
+            box-shadow: 0 0 12px rgba(var(--dorado-rgb), .35);
+        }
+        .form-floating > label { color: var(--texto-suave); }
+        .form-floating > label i { color: var(--dorado); }
+
+        /* Botón dorado principal (GUARDAR, INGRESAR, VER ESTADO, etc.) */
+        .btn-warning {
+            --bs-btn-color: #000;
+            --bs-btn-hover-color: #000;
+            --bs-btn-active-color: #000;
+            background: var(--degradado-oro);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: .3s;
+        }
+        .btn-warning:hover { filter: brightness(1.1); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,.45), 0 0 20px rgba(var(--dorado-rgb), .25); }
+        .btn-warning.btn-lg { font-size: 1.05rem; padding: .8rem 1.8rem; }
+
+        /* Botón con borde dorado (Acceso personal, Inicio, Ver servicios) */
+        .btn-outline-warning {
+            --bs-btn-color: var(--dorado);
+            --bs-btn-border-color: var(--dorado);
+            --bs-btn-hover-color: #000;
+            --bs-btn-hover-bg: var(--dorado);
+            --bs-btn-hover-border-color: var(--dorado);
+            --bs-btn-active-color: #000;
+            --bs-btn-active-bg: var(--dorado-claro);
+            --bs-btn-active-border-color: var(--dorado-claro);
+        }
+        .btn-outline-warning.btn-lg { border-radius: 12px; font-weight: 700; font-size: 1.05rem; padding: .8rem 1.8rem; }
+        /* ==================== FIN A11: FORMULARIOS Y BOTONES ==================== */
+
+
+        /* ==============================================================
+           INICIO A12: MENÚ DEL PANEL (Clientes, Diagnóstico, etc.)
+           ============================================================== */
+        .menu-ric { display: flex; flex-direction: column; gap: 10px; width: 230px; flex: 0 0 auto; }
+        .btn-menu {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: var(--plata);
+            font-weight: 700;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--azul), #061a38);
+            border: 1px solid rgba(var(--dorado-rgb), .45);
+            border-radius: 14px;
+            box-shadow: 0 8px 18px rgba(0,0,0,.4);
+            transition: .3s;
+        }
+        .btn-menu i { font-size: 21px; color: var(--dorado); }
+        .btn-menu:hover, .btn-menu.active {
+            background: var(--degradado-oro);
+            color: #000;
+            transform: translateX(10px) scale(1.04);
+            box-shadow: 0 14px 25px rgba(0,0,0,.5);
+        }
+        .btn-menu:hover i, .btn-menu.active i { color: #000; }
+        .btn-menu:active { transform: scale(.96); }
+        .menu-mobile {
+            display: flex; gap: 8px;
+            overflow-x: auto;
+            width: 100%; max-width: 540px;
+            padding: 4px 4px 14px;
+        }
+        .menu-mobile .btn-menu { flex: 0 0 auto; white-space: nowrap; font-size: 14px; padding: 8px 12px; border-radius: 12px; }
+        .menu-mobile .btn-menu i { font-size: 18px; }
+        .menu-mobile .btn-menu:hover, .menu-mobile .btn-menu.active { transform: none; }
+        /* ==================== FIN A12: MENÚ DEL PANEL ==================== */
+
+
+        /* ==============================================================
+           INICIO A13: VERSIÓN PARA CELULAR Y TABLET
+           ============================================================== */
+        @media (max-width: 992px) {
+            .login-image { display: none; }
+            .login-page {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-image: linear-gradient(rgba(1,6,15,.85), rgba(1,6,15,.92)), var(--foto-taller);
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .login-card { width: 95%; max-width: 380px; margin: 20px; padding: 30px; border-radius: 20px; }
+            .panel-card { max-width: 540px; }
+            .contenido { display: none; }
+            .hero-section { padding: 50px 0 70px; }
+        }
+        /* ==================== FIN A13: VERSIÓN PARA CELULAR Y TABLET ==================== */
+    </style>
+</head>
+<body>
+    <div id="demo-banner" class="d-none">
+        <span><b>MODO DEMOSTRACIÓN</b> · sin servidor: los datos se guardan solo en este navegador · <a href="#" id="demo-reset">Borrar datos</a></span>
+        <button type="button" id="demo-cerrar" aria-label="Cerrar aviso" title="Cerrar aviso">✕</button>
+    </div>
+
+    <!-- =====================================================================
+         INICIO B1: SITIO PÚBLICO (lo que ve el cliente al entrar)
+         ===================================================================== -->
+    <div id="view-home" class="view">
+
+        <!-- ===== INICIO B1.1: BARRA DE NAVEGACIÓN ===== -->
+        <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#inicio">
+                    <img class="logo logo-nav" alt="RIC Service - Taller Mecánico">
+                    <div class="ms-2 d-none d-sm-block">
+                        <span class="brand-nombre d-block">RIC SERVICE</span>
+                        <span class="brand-lema">Tu vehículo en las mejores manos</span>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#servicios">Historia y Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#nosotros">Repuestos y Fotos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#galeria">Motivos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                        <li class="nav-item ms-lg-3 my-2 my-lg-0">
+                            <a class="btn btn-outline-warning btn-sm rounded-pill" href="#" data-go="login">
+                                <i class="bi bi-lock-fill me-1"></i>Acceso personal
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-warning rounded-pill px-4" style="font-size:15px;" href="#" data-go="consulta">
+                                <i class="bi bi-gear-fill me-1"></i>CONSULTAR REPARACIÓN
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- ===== FIN B1.1: BARRA DE NAVEGACIÓN ===== -->
+
+
+        <!-- ===== INICIO B1.2: PORTADA (logo grande y botones) ===== -->
+        <header class="hero-section" id="inicio">
+            <div class="hero-carrusel" id="hero-carrusel" aria-hidden="true"></div>
+            <div class="hero-puntos" id="hero-puntos"></div>
+            <div class="container">
+                <div class="logo-marco"><img class="logo logo-hero" alt="RIC Service - Taller Mecánico"></div>
+                <h1 class="hero-title display-5">Taller Mecánico <span>Automotriz</span></h1>
+                <p class="hero-sub">Mantenimiento, reparación y confianza. En RIC SERVICE tu vehículo está en las mejores manos.</p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <a class="btn btn-warning btn-lg" href="#" data-go="consulta"><i class="bi bi-search me-2"></i>CONSULTAR REPARACIÓN</a>
+                    <a class="btn btn-outline-warning btn-lg" href="#servicios"><i class="bi bi-tools me-2"></i>Ver servicios</a>
+                </div>
+            </div>
+        </header>
+        <!-- ===== FIN B1.2: PORTADA ===== -->
+
+
+        <!-- ===== INICIO B1.3: TRES TARJETAS (Diagnósticos, Cambios de aceite, Motores) ===== -->
+        <section class="py-5 bloque-oscuro">
+            <div class="container">
+                <div class="row g-4 text-center">
+
+                    <!-- Tarjeta 1: Diagnósticos -->
+                    <div class="col-md-4">
+                        <div class="card stat-card p-4 h-100">
+                            <div class="stat-icon"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+                            <h4 class="fw-bold">Diagnósticos</h4>
+                            <p class="text-suave mb-0">En RIC SERVICE nos especializamos en brindar soluciones confiables para el cuidado y mantenimiento de tu vehículo. Contamos con personal altamente capacitado, herramientas de diagnóstico de última tecnología y un firme compromiso con la calidad en cada reparación. Si tu automóvil presenta ruidos extraños, pérdida de potencia o cualquier otra falla, nuestro equipo realizará una revisión completa para identificar el problema y ofrecerte la mejor solución. Trabajamos con honestidad, rapidez y profesionalismo para que vuelvas a conducir con total seguridad y confianza.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: Cambios de aceite -->
+                    <div class="col-md-4">
+                        <div class="card stat-card p-4 h-100">
+                            <div class="stat-icon"><i class="bi bi-droplet-fill"></i></div>
+                            <h4 class="fw-bold">Cambios de aceite</h4>
+                            <p class="text-suave mb-0">En RIC SERVICE ofrecemos un servicio integral para el cuidado de tu vehículo. Realizamos cambios de aceite y filtros, mantenimiento preventivo, reparación de motores, sistemas de frenos, suspensión, dirección, embrague, transmisión, electricidad automotriz y diagnóstico computarizado. Nuestro equipo de técnicos trabaja con herramientas modernas y repuestos de calidad para garantizar un servicio seguro, eficiente y confiable. Ya sea para un mantenimiento de rutina o una reparación compleja, en RIC SERVICE encontrarás la experiencia y el compromiso que tu vehículo necesita para mantenerse en óptimas condiciones. Tu seguridad y satisfacción son nuestra mayor prioridad.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 3: Reparación de motores -->
+                    <div class="col-md-4">
+                        <div class="card stat-card p-4 h-100">
+                            <div class="stat-icon"><i class="bi bi-gear-wide-connected"></i></div>
+                            <h4 class="fw-bold">Reparación de Motores y mucho más</h4>
+                            <p class="text-suave mb-0">En RIC SERVICE somos especialistas en la reparación y mantenimiento de motores a gasolina y diésel, ofreciendo soluciones eficientes para recuperar el máximo rendimiento de tu vehículo. También realizamos reparación de cajas de cambios, embragues, sistemas de frenos, suspensión, dirección, transmisión, sistema de refrigeración, electricidad automotriz, inyección electrónica y diagnóstico computarizado. Nuestro equipo de mecánicos trabaja con equipos modernos y repuestos de calidad para garantizar un servicio confiable, preciso y duradero. Nos comprometemos a cuidar tu vehículo como si fuera nuestro, brindándote seguridad, confianza y un excelente desempeño en cada kilómetro recorrido.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- ===== FIN B1.3: TRES TARJETAS ===== -->
+
+
+        <!-- ===== INICIO B1.4: ESTADÍSTICAS, FOTOS, HISTORIA Y SERVICIOS ===== -->
+        <section class="py-5" id="nosotros">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="etiqueta">Conoce nuestro taller</span>
+                    <h2 class="seccion-titulo display-6">Repuestos y Fotos de la empresa</h2>
+                </div>
+
+                <div class="row g-4 mb-5">
+
+                    <!-- Cuadro: Estado de servicio semanal (pon aquí tus fotos) -->
+                    <div class="col-lg-6">
+                        <div class="tarjeta-oscura p-4 h-100">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-box-seam-fill me-2 text-dorado"></i>REPUESTOS</h5>
+                            <div class="foto-box">
+                                <img class="foto-real" src="img/repuestos.webp" alt="Repuestos y filtros disponibles en RIC SERVICE">
+                            </div>
+                            <div class="info-box mt-3">
+                                <strong>Repuestos y filtros originales:</strong> En RIC SERVICE contamos con un amplio stock de repuestos, filtros, aceites y accesorios de marcas reconocidas, listos para tu vehículo. Así evitamos demoras y garantizamos piezas de calidad en cada reparación.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cuadro: Fotos de la empresa -->
+                    <div class="col-lg-6">
+                        <div class="tarjeta-oscura p-4 h-100">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-camera-fill me-2 text-dorado"></i>FOTOS DE LA EMPRESA</h5>
+                            <div class="foto-box">
+                                <div class="foto-galeria">
+                                    <img src="img/ambulancia.webp" alt="Ambulancia atendida en RIC SERVICE">
+                                    <img src="img/auto.webp" alt="Vehículo atendido en RIC SERVICE">
+                                </div>
+                            </div>
+                            <div class="info-box mt-3">
+                                <strong>Conoce nuestro trabajo:</strong> Las imágenes muestran el compromiso y la dedicación de nuestros mecánicos en cada reparación. En RIC SERVICE atendemos motores, frenos, suspensión, cambios de aceite, electricidad automotriz y mucho más, utilizando equipos modernos y repuestos de calidad. Si buscas un taller de confianza en Oruro, te invitamos a visitarnos y dejar tu vehículo en manos de verdaderos profesionales. ¡Tu seguridad y satisfacción son nuestra mayor prioridad!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4" id="servicios">
+
+                    <!-- Cuadro: Historia de la empresa -->
+                    <div class="col-lg-5">
+                        <div class="tarjeta-oscura p-4 h-100">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-dorado"></i>HISTORIA DE LA EMPRESA: RIC SERVICE</h5>
+                            <div class="foto-box foto-logo-box">
+                                <img src="img/logo-historia.webp" alt="Logo de RIC SERVICE">
+                            </div>
+                            <div class="info-box mt-3">
+                                <p>RIC SERVICE nació en el año 2018 como un pequeño emprendimiento familiar dedicado a la reparación y el mantenimiento automotriz. Sus inicios fueron humildes, con un espacio de trabajo sencillo y tan solo dos trabajadores, pero con una gran visión de crecimiento, compromiso y pasión por la mecánica.
+
+                                Desde el primer día, nuestro principal objetivo fue ofrecer un servicio de calidad, trabajando con responsabilidad, honestidad y dedicación para brindar a cada cliente soluciones confiables para su vehículo. Con esfuerzo, perseverancia y el deseo constante de mejorar, fuimos construyendo una reputación basada en la confianza y la satisfacción de nuestros clientes.
+
+                                Con el paso de los años, RIC SERVICE fue creciendo y evolucionando. Lo que comenzó como un pequeño taller familiar se convirtió en una empresa con su propio equipo de trabajadores, ampliando sus servicios y fortaleciendo su experiencia en el sector automotriz. Cada desafío superado y cada cliente satisfecho nos motivaron a seguir adelante, apostando por la innovación, la calidad y la mejora continua.
+
+                                Un momento muy importante en nuestra trayectoria llegó en el año 2025, cuando RIC SERVICE recibió el reconocimiento como Mejor Taller Mecánico de Oruro, un logro que representa el resultado de años de esfuerzo, dedicación y trabajo constante. Este reconocimiento no solo nos llena de orgullo, sino que también nos impulsa a continuar creciendo y ofreciendo un servicio cada vez mejor.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cuadro: Servicios de la empresa -->
+                    <div class="col-lg-7">
+                        <div class="tarjeta-oscura p-1 h-100">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-wrench-adjustable me-2 text-dorado"></i>SERVICIOS DE LA EMPRESA</h5>
+                            <div class="foto-box">
+                                <div class="foto-galeria ">
+                                    <img src="img/herramientas.webp" alt="Herramientas del taller RIC SERVICE"
+                                     style="width: 500px; height: 250px; object-fit: cover; display: block; margin: auto;">>
+                                    
+                                </div>
+                            </div>
+                            <div class="info-box mt-3">
+                                <strong>Servicios que ofrecemos en RIC SERVICE:</strong>
+                                <ul class="mt-2 mb-0">
+                                    <li>🔧 Reparación y mantenimiento de motores.</li>
+                                    <li>🛢️ Cambio de aceite y filtros.</li>
+                                    <li>🛑 Reparación y mantenimiento de frenos.</li>
+                                    <li>⚙️ Reparación de cajas de cambio y embragues.</li>
+                                    <li>🚗 Mantenimiento de suspensión y dirección.</li>
+                                    <li>🔋 Electricidad automotriz y diagnóstico computarizado.</li>
+                                    <li>❄️ Servicio de sistema de refrigeración y radiadores.</li>
+                                    <li>🌡️ Afinación de motores e inyección electrónica.</li>
+                                    <li>🛠️ Mantenimiento preventivo y correctivo.</li>
+                                    <li>✅ Revisión general para viajes, para que estés sin ningún peligro.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== FIN B1.4: ESTADÍSTICAS, FOTOS, HISTORIA Y SERVICIOS ===== -->
+
+
+        <!-- ===== INICIO B1.5: POR QUÉ ELEGIR A RIC SERVICE (4 motivos) ===== -->
+        <section class="py-5 bloque-oscuro" id="galeria">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="etiqueta">RIC SERVICE 2026</span>
+                    <h2 class="seccion-titulo display-6">POR QUÉ ELEGIR A RIC SERVICE</h2>
+                    <p class="text-suave mt-3 mb-0">En RIC SERVICE cuidamos tu vehículo como si fuera nuestro.</p>
+                </div>
+                <div class="row g-4">
+
+                    <!-- Motivo 1 -->
+                    <div class="col-md-6">
+                        <div class="motivo-card">
+                            <div class="step-number">1</div>
+                            <h5>👨‍🔧 PERSONAL CAPACITADO</h5>
+                            <p class="text-suave mb-0">Sabemos lo importante que es confiar tu vehículo a las personas correctas. Por eso, en RIC SERVICE contamos con mecánicos responsables, con experiencia y en constante aprendizaje. Trabajamos con dedicación en cada reparación para que tengas la tranquilidad de saber que tu automóvil está en buenas manos.</p>
+                        </div>
+                    </div>
+
+                    <!-- Motivo 2 -->
+                    <div class="col-md-6">
+                        <div class="motivo-card">
+                            <div class="step-number">2</div>
+                            <h5>🛡️ GARANTÍA</h5>
+                            <p class="text-suave mb-0">Cada trabajo que realizamos está respaldado por nuestro compromiso con la calidad. No solo reparamos tu vehículo, también te damos la confianza de que el servicio fue realizado de manera correcta, utilizando repuestos de calidad y cuidando cada detalle para tu tranquilidad.</p>
+                        </div>
+                    </div>
+
+                    <!-- Motivo 3 -->
+                    <div class="col-md-6">
+                        <div class="motivo-card">
+                            <div class="step-number">3</div>
+                            <h5>⚡ ATENCIÓN RÁPIDA Y AMABLE</h5>
+                            <p class="text-suave mb-0">Entendemos que tu tiempo es valioso. Por eso nos esforzamos por brindarte una atención rápida, amable y personalizada. Escuchamos tus necesidades, resolvemos tus dudas y trabajamos para entregarte tu vehículo en el menor tiempo posible, sin descuidar la calidad del servicio.</p>
+                        </div>
+                    </div>
+
+                    <!-- Motivo 4 -->
+                    <div class="col-md-6">
+                        <div class="motivo-card">
+                            <div class="step-number">4</div>
+                            <h5>✅ CALIDAD CERTIFICADA</h5>
+                            <p class="text-suave mb-0">En RIC SERVICE creemos que un buen trabajo se demuestra con resultados. Utilizamos herramientas modernas, técnicas especializadas y repuestos de confianza para ofrecer reparaciones duraderas y seguras. Nuestro objetivo es que cada cliente se vaya satisfecho y regrese con la seguridad de haber elegido un taller en el que realmente puede confiar.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- ===== FIN B1.5: POR QUÉ ELEGIR A RIC SERVICE ===== -->
+
+
+        <!-- ===== INICIO B1.5.1: CONTACTO
+             Para actualizar el teléfono o la dirección, edita el texto
+             de los enlaces de abajo (busca "69346521" y "Catacora"). ===== -->
+        <section class="py-5 bloque-oscuro" id="contacto">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="etiqueta">Escríbenos o visítanos</span>
+                    <h2 class="seccion-titulo display-6">Contáctanos</h2>
+                </div>
+                <div class="contacto-card p-4 p-md-5 mx-auto" style="max-width: 780px;">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-4 text-center">
+                            <img class="contacto-logo" src="img/logo.webp" alt="RIC Service - Taller Mecánico">
+                        </div>
+                        <div class="col-md-8">
+                            <a class="contacto-item" href="tel:+59169346521">
+                                <i class="bi bi-telephone-fill"></i>
+                                <div>
+                                    <span class="etq-contacto">Celular / WhatsApp</span>
+                                    69346521
+                                </div>
+                            </a>
+                            <a class="contacto-item" href="https://wa.me/59169346521" target="_blank" rel="noopener">
+                                <i class="bi bi-whatsapp"></i>
+                                <div>
+                                    <span class="etq-contacto">Escríbenos por WhatsApp</span>
+                                    Coordina tu cita o consulta el estado de tu vehículo
+                                </div>
+                            </a>
+                            <a class="contacto-item" href="https://maps.app.goo.gl/Rg3LDjePVyeUw74P7" target="_blank" rel="noopener">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <div>
+                                    <span class="etq-contacto">Ubicación · toca para abrir en Google Maps</span>
+                                    Calle Catacora, entre Pasaje A
+                                </div>
+                            </a>
+                            <div class="contacto-item">
+                                <i class="bi bi-signpost-2-fill"></i>
+                                <div>
+                                    <span class="etq-contacto">Ciudad</span>
+                                    Oruro, Bolivia
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mapa con la ubicación del taller (necesita internet; el botón de abajo abre Google Maps) -->
+                <div class="mapa-taller mx-auto mt-5" style="max-width: 780px;">
+                    <iframe title="Ubicación de RIC SERVICE en Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+                        src="https://www.google.com/maps?q=-17.986645,-67.1115113&z=18&output=embed"></iframe>
+                    <a class="btn btn-warning rounded-pill px-4 mt-3" href="https://maps.app.goo.gl/Rg3LDjePVyeUw74P7" target="_blank" rel="noopener">
+                        <i class="bi bi-geo-alt-fill me-2"></i>CÓMO LLEGAR · Abrir en Google Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- ===== FIN B1.5.1: CONTACTO ===== -->
+
+
+        <!-- ===== INICIO B1.6: PIE DE PÁGINA ===== -->
+        <footer class="footer-ric py-4">
+            <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
+                <div class="d-flex align-items-center gap-3">
+                    <img class="logo logo-footer" alt="RIC Service - Taller Mecánico">
+                    <div>
+                        <div class="brand-nombre">RIC SERVICE</div>
+                        <div class="brand-lema">Tu vehículo en las mejores manos</div>
+                    </div>
+                </div>
+                <div class="text-end text-center-md">
+                    <div class="small mb-1"><i class="bi bi-telephone-fill text-dorado me-1"></i>69346521 &nbsp;·&nbsp; <i class="bi bi-geo-alt-fill text-dorado me-1"></i><a class="text-reset" href="https://maps.app.goo.gl/Rg3LDjePVyeUw74P7" target="_blank" rel="noopener">Calle Catacora, entre Pasaje A</a></div>
+                    <div class="small">© 2026 RIC SERVICE · Taller Mecánico Automotriz · Oruro, Bolivia</div>
+                </div>
+            </div>
+        </footer>
+        <!-- ===== FIN B1.6: PIE DE PÁGINA ===== -->
+
+    </div>
+    <!-- ===================== FIN B1: SITIO PÚBLICO ===================== -->
+
+
+    <!-- =====================================================================
+         INICIO B2: PANTALLA CONSULTAR ESTADO DEL VEHÍCULO (pública)
+         El cliente escribe solo la placa (4 números y 3 letras) para ver el estado.
+         ===================================================================== -->
+    <section id="view-consulta" class="view login-page d-none">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+                <div class="col-lg-7 login-image">
+                    <div class="overlay">
+                        <div class="contenido">
+                            <div class="logo-marco mb-3"><img class="logo logo-side" alt="RIC Service - Taller Mecánico"></div>
+                            <h3>Taller Mecánico</h3>
+                            <p>Consulta el estado de tu vehículo solo con la placa.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-flex justify-content-center align-items-center py-4">
+                    <div class="login-card">
+                        <div class="text-center mb-4">
+                            <div class="icono"><i class="bi bi-tools"></i></div>
+                        </div>
+                        <div class="text-center my-4">
+                            <h3 class="titulo-form">CONSULTA EL ESTADO DE TU VEHÍCULO</h3>
+                        </div>
+                        <form id="form-consulta" novalidate>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control text-uppercase" id="c-placa" placeholder="Placa" data-kind="placa" maxlength="7" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+                                <label for="c-placa"><i class="bi bi-gear-wide-connected me-2"></i>PLACA</label>
+                            </div>
+                            <div class="form-text mb-3 text-center">Escribe 4 números y 3 letras, sin espacios. Ejemplo: <b class="text-dorado">1234ABC</b></div>
+                            <button class="btn btn-warning w-100 py-3" type="submit">
+                                <i class="bi bi-search me-2"></i>VER ESTADO
+                            </button>
+                        </form>
+                        <div id="consulta-result" class="mt-3"></div>
+                        <div class="text-center mt-3">
+                            <a href="#" class="small text-decoration-none" data-go="home"><i class="bi bi-arrow-left"></i> Volver al inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ===================== FIN B2: PANTALLA CONSULTAR ESTADO ===================== -->
+
+
+    <!-- =====================================================================
+         INICIO B3: PANTALLA ACCESO DEL PERSONAL (login)
+         ===================================================================== -->
+    <section id="view-login" class="view login-page d-none">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+                <div class="col-lg-7 login-image">
+                    <div class="overlay">
+                        <div class="contenido">
+                            <div class="logo-marco mb-3"><img class="logo logo-side" alt="RIC Service - Taller Mecánico"></div>
+                            <h3>Taller Mecánico</h3>
+                            <p>Control de clientes, vehículos, órdenes de trabajo, y Sistema de registro</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-flex justify-content-center align-items-center py-4">
+                    <div class="login-card">
+                        <div class="text-center mb-4">
+                            <div class="icono"><i class="bi bi-tools"></i></div>
+                            <h2 class="mt-3">Bienvenido</h2>
+                            <p>La calidad de un taller se refleja en cada reparación. Trabajamos con precisión, compromiso y confianza para mantener cada vehículo en las mejores condiciones.</p>
+                        </div>
+                        <form id="form-login" novalidate>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="l-usuario" placeholder="Usuario" autocomplete="username" required>
+                                <label for="l-usuario"><i class="bi bi-person-fill me-2"></i>Usuario</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="l-clave" placeholder="Contraseña" autocomplete="current-password" required>
+                                <label for="l-clave"><i class="bi bi-lock-fill me-2"></i>Contraseña</label>
+                            </div>
+                            <div id="login-error" class="alert alert-danger py-2 small d-none">Usuario o contraseña incorrectos.</div>
+                            <button class="btn btn-warning w-100 py-3" type="submit">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>INGRESAR
+                            </button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="#" class="small text-decoration-none" data-go="home"><i class="bi bi-arrow-left"></i> Volver al inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ===================== FIN B3: PANTALLA ACCESO DEL PERSONAL ===================== -->
+
+
+    <!-- =====================================================================
+         INICIO B4: PANTALLA PANEL DE REGISTROS (solo con acceso)
+         Aquí se muestran las ventanas: Clientes, Vehículos, Mecánicos, Diagnóstico,
+         Orden de Trabajo, Precios e Historial y Ganancias (según el perfil: jefe o empleado).
+         Los campos de cada formulario están en el JavaScript: busca
+         "INICIO C2" más abajo.
+         ===================================================================== -->
+    <section id="view-panel" class="view login-page d-none">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+
+                <!-- Columna izquierda: logo y menú (en computadora) -->
+                <div class="col-lg-7 login-image">
+                    <div class="overlay">
+                        <nav class="menu-ric" id="menu-desktop"></nav>
+                        <div class="contenido">
+                            <div class="logo-marco mb-3"><img class="logo logo-side" alt="RIC Service - Taller Mecánico"></div>
+                            <h3>Taller Mecánico</h3>
+                            <p>Control de clientes, vehículos, órdenes de trabajo, y Sistema de registro</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna derecha: formulario y tabla de registros -->
+                <div class="col-lg-5 d-flex justify-content-center align-items-center py-4">
+                    <div class="w-100 d-flex flex-column align-items-center">
+                        <nav class="menu-mobile d-lg-none" id="menu-mobile"></nav>
+                        <div class="login-card panel-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+                                <button class="btn btn-sm btn-outline-warning rounded-pill" type="button" data-go="home">
+                                    <i class="bi bi-house-fill me-1"></i>Inicio
+                                </button>
+                                <span class="badge rol-badge" id="panel-rol"></span>
+                                <button class="btn btn-sm btn-outline-danger rounded-pill" type="button" id="btn-logout">
+                                    <i class="bi bi-box-arrow-right me-1"></i>Salir
+                                </button>
+                            </div>
+                            <div class="text-center mb-3">
+                                <div class="icono"><i class="bi bi-tools" id="panel-icon"></i></div>
+                            </div>
+                            <div class="text-center my-3">
+                                <h3 class="titulo-form" id="panel-title"></h3>
+                            </div>
+                            <div id="panel-ayuda" class="ayuda-panel d-none"></div>
+                            <div id="panel-msg" class="alert py-2 small d-none" role="alert"></div>
+
+                            <!-- Ventanas con formulario + lista -->
+                            <div id="panel-normal">
+                                <div id="edit-banner" class="d-none">
+                                    <div class="alert alert-warning py-2 small d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-pencil-square me-1"></i>Estás corrigiendo un registro</span>
+                                        <button type="button" class="btn btn-sm btn-outline-dark py-0" id="btn-cancel-edit">Cancelar</button>
+                                    </div>
+                                </div>
+                                <form id="panel-form" novalidate autocomplete="off"></form>
+                                <hr>
+                                <h6 class="fw-bold">
+                                    <i class="bi bi-table me-1 text-dorado"></i>Registros guardados
+                                    <span class="badge bg-secondary" id="panel-count">0</span>
+                                </h6>
+                                <div id="panel-resumen" class="mb-2"></div>
+                                <div id="panel-records" class="records-box"></div>
+                            </div>
+
+                            <!-- Ventana del jefe: historial de trabajos y ganancias -->
+                            <div id="panel-hist" class="d-none"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- ===================== FIN B4: PANTALLA PANEL DE REGISTROS ===================== -->
+
+
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>window.bootstrap || document.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"><\/script>');</script>
+    <script src="reglas.js"></script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        /* ==============================================================
+           INICIO C1: CONFIGURACIÓN
+           El usuario y la contraseña YA NO están en este archivo: los valida
+           el servidor (server.js). Hay dos perfiles:
+             - jefe:     acceso total (historial, ganancias, precios, eliminar)
+             - empleado: acceso restringido (solo trabajo del día)
+           ============================================================== */
+        var TOKEN_KEY = 'ric_token', ROL_KEY = 'ric_rol', USER_KEY = 'ric_user';
+        var ESTADOS = ['Recibido', 'En diagnóstico', 'En reparación', 'Listo para entrega', 'Entregado'];
+        var ESTADO_COLOR = {
+            'Recibido': 'secondary', 'En diagnóstico': 'info', 'En reparación': 'warning',
+            'Listo para entrega': 'success', 'Entregado': 'light'
+        };
+        var RE_PLACA = /^[0-9]{4}[A-Z]{3}$/;     // 4 números + 3 letras mayúsculas
+        var LET = 'A-Za-zÁÉÍÓÚÜÑáéíóúüñ';
+        var RE_NOMBRE = new RegExp('^[' + LET + ']+( [' + LET + ']+)*$');
+        var RE_LETRAS = new RegExp('^[' + LET + ']+([ \\-][' + LET + ']+)*$');      // letras con espacios o guion (marca, color)
+        var MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        /* ==================== FIN C1: CONFIGURACIÓN ==================== */
+
+
+        /* ---------- Utilidades (funciones de ayuda) ---------- */
+        function $(s, r) { return (r || document).querySelector(s); }
+        function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+        function norm(s) {
+            return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+        }
+        function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+        function fmtF(s) {                       // fecha legible dd/mm/aaaa
+            if (!s) return '';
+            if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s.split('-').reverse().join('/');
+            var d = new Date(s);
+            return isNaN(d) ? s : pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
+        }
+        function mesDe(iso) { var d = new Date(iso); return d.getFullYear() + '-' + pad2(d.getMonth() + 1); }
+        function diaDe(iso) { var d = new Date(iso); return mesDe(iso) + '-' + pad2(d.getDate()); }
+        function mesNombre(m) { var p = m.split('-'); return MESES[Number(p[1]) - 1] + ' ' + p[0]; }
+        function fmtBs(n) {
+            n = Number(n) || 0;
+            var p = n.toFixed(2).split('.');
+            p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return 'Bs ' + p.join('.');
+        }
+        function sinTags(s) { return String(s).replace(/<[^>]*>/g, ' '); }
+        function badge(estado) {
+            return '<span class="badge text-bg-' + (ESTADO_COLOR[estado] || 'secondary') + '">' + esc(estado) + '</span>';
+        }
+        function alerta(tipo, texto) {
+            return '<div class="alert alert-' + tipo + ' small mb-0"><i class="bi bi-exclamation-triangle-fill me-1"></i>' + esc(texto) + '</div>';
+        }
+
+        /* ---------- Filtros de escritura (solo letras, solo números, placa) ---------- */
+        function filtrarPlaca(v) {                // 4 números y luego 3 letras, siempre en mayúscula
+            v = String(v).toUpperCase();
+            var out = '';
+            for (var i = 0; i < v.length; i++) {
+                var ch = v.charAt(i);
+                if (out.length < 4) { if (/[0-9]/.test(ch)) out += ch; }
+                else if (out.length < 7) { if (/[A-Z]/.test(ch)) out += ch; }
+            }
+            return out;
+        }
+        function limpiarKind(kind, v) {
+            if (kind === 'placa') return filtrarPlaca(v);
+            if (kind === 'celular' || kind === 'ci') return v.replace(/\D/g, '').slice(0, 10);
+            if (kind === 'entero') return v.replace(/\D/g, '').slice(0, 6);
+            if (kind === 'nombre') return v.replace(new RegExp('[^' + LET + ' ]', 'g'), '').replace(/ {2,}/g, ' ').replace(/^ /, '').toLocaleUpperCase('es');
+            if (kind === 'letras') return v.replace(new RegExp('[^' + LET + ' \\-]', 'g'), '').replace(/ {2,}/g, ' ').replace(/^[ \-]/, '').toLocaleUpperCase('es');
+            if (kind === 'texto') return v.replace(new RegExp('[^' + LET + '0-9 .\\-/]', 'g'), '').replace(/ {2,}/g, ' ').replace(/^ /, '').toLocaleUpperCase('es');
+            if (kind === 'libre') return v.replace(/[<>]/g, '').toLocaleUpperCase('es');
+            if (kind === 'anio') return v.replace(/\D/g, '').slice(0, 4);
+            if (kind === 'usuario') return v.toLowerCase().replace(/[^a-z0-9_.]/g, '').slice(0, 20);
+            if (kind === 'precio') {
+                v = v.replace(/[^0-9.]/g, '');
+                var i = v.indexOf('.');
+                if (i !== -1) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '').slice(0, 2);
+                return v;
+            }
+            return v;
+        }
+        // Mientras se escribe en cualquier campo con data-kind, se borra lo que no corresponde
+        document.addEventListener('input', function (e) {
+            var t = e.target, k = t.getAttribute && t.getAttribute('data-kind');
+            if (k) {
+                var v = t.value, n = limpiarKind(k, v);
+                if (n !== v) {
+                    var pos = t.selectionStart;
+                    t.value = n;
+                    try { var p = Math.max(0, pos - (v.length - n.length)); t.setSelectionRange(p, p); } catch (x) {}
+                }
+                t.classList.remove('is-invalid');
+            }
+            if (t.hasAttribute && t.hasAttribute('data-multi-search')) aplicarBusquedaMulti(t);
+            if (t.hasAttribute && t.hasAttribute('data-rep-search')) aplicarBusquedaRep(t);
+            if (t.classList && t.classList.contains('rep-qty')) actualizarResumen();
+            if (t.id === 'h-q') { H.q = t.value; renderHistorial(true); }
+        });
+
+
+        /* ==============================================================
+           INICIO C3: CONEXIÓN CON EL SERVIDOR Y SESIÓN
+           Los datos viven en el servidor (base de datos). Cada petición
+           del panel lleva la sesión (token) del usuario.
+           ============================================================== */
+        var mem = {};
+        function sget(k) { try { return sessionStorage.getItem(k) || ''; } catch (e) { return mem[k] || ''; } }
+        function sset(k, v) { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch (e) { mem[k] = v || ''; } }
+        function token() { return sget(TOKEN_KEY); }
+        function rol() { return sget(ROL_KEY); }
+        function isAuth() { return !!token(); }
+
+        function apiReal(method, url, body) {
+            var opts = { method: method, headers: { 'Content-Type': 'application/json' }, cache: 'no-store' };
+            if (token()) opts.headers.Authorization = 'Bearer ' + token();
+            if (body !== undefined) opts.body = JSON.stringify(body);
+            return fetch(url, opts).then(function (r) {
+                return r.json().catch(function () { return {}; }).then(function (j) {
+                    if (r.status === 401 && token() && url !== '/api/login') cerrarSesion('Tu sesión venció. Ingresa de nuevo.');
+                    return { ok: r.ok, status: r.status, data: j };
+                });
+            }).catch(function () {
+                return { ok: false, status: 0, data: { error: 'No hay conexión con el servidor. Revisa tu internet e intenta de nuevo.' } };
+            });
+        }
+
+        /* ---------- Modo demostración (SIN servidor y SIN internet) ----------
+           Si abres la página sin "npm start" (doble clic al archivo o Live Server),
+           todo funciona igual pero los datos se guardan SOLO en este navegador.
+           Usa las mismas reglas del servidor (archivo reglas.js).
+           En Internet (Render) este modo NUNCA se activa. ---------- */
+        var R = window.RIC_REGLAS, DEMO = false, DEMO_KEY = 'ric_demo_db', demoMem = null;
+        var listo = new Promise(function (resolve) {
+            var local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+            if (!local || !R) { resolve(); return; }
+            fetch('/api/ping', { cache: 'no-store' }).then(function (r) { return r.json(); })
+                .then(function (j) { DEMO = !(j && j.ok); resolve(); })
+                .catch(function () { DEMO = true; resolve(); });
+        }).then(function () { if (DEMO) $('#demo-banner').classList.remove('d-none'); });
+        function demoCargar() {
+            var t = null;
+            try { t = JSON.parse(localStorage.getItem(DEMO_KEY)); } catch (e) { t = demoMem; }
+            if (!t) {
+                t = {};
+                R.COLECCIONES.forEach(function (c) { t[c] = []; });
+                R.sembrar(t).forEach(function (g) { t[g.col].push(g.data); });
+            }
+            return t;
+        }
+        function demoGuardar(t) { demoMem = t; try { localStorage.setItem(DEMO_KEY, JSON.stringify(t)); } catch (e) {} }
+        function aplicarGuardar(t, lista) {      // guarda uno o varios registros (la orden y los repuestos descontados)
+            (lista || []).forEach(function (g) {
+                var arr = t[g.col], i = arr.map(function (x) { return x.id; }).indexOf(g.id);
+                if (i === -1) arr.push(g.data); else arr[i] = g.data;
+            });
+        }
+        function localApi(method, url, body) {
+            var m, t = demoCargar(), out = function (r) { return { ok: r.status < 400, status: r.status, data: r.json }; };
+            if (method === 'POST' && url === '/api/login') {
+                var u = R.USUARIOS_DEMO.filter(function (x) { return x.usuario === String((body || {}).usuario || '').trim().toLowerCase() && x.clave === String((body || {}).clave || ''); })[0];
+                if (u) return { ok: true, status: 200, data: { token: 'demo.' + u.rol, rol: u.rol, usuario: u.usuario } };
+                var du = R.buscarUsuario(t, (body || {}).usuario, (body || {}).clave);
+                return du ? { ok: true, status: 200, data: { token: 'demo.' + du.rol + '.' + du.id, rol: du.rol, usuario: du.usuario } }
+                          : { ok: false, status: 401, data: { error: 'Usuario o contraseña incorrectos.' } };
+            }
+            if ((m = url.match(/^\/api\/consulta\/(.+)$/))) return out(R.consultar(t, decodeURIComponent(m[1])));
+            var tk = (token() || '').split('.'), rolDemo = tk[1], uidDemo = tk[2];
+            if (uidDemo) {                                  // usuario creado: se toma su tipo actual
+                var du2 = (t.usuarios || []).filter(function (x) { return x.id === uidDemo; })[0];
+                if (!du2) { cerrarSesion('Tu usuario ya no existe. Ingresa de nuevo.'); return { ok: false, status: 401, data: { error: 'Sesión vencida.' } }; }
+                rolDemo = du2.rol;
+            }
+            if (rolDemo !== 'jefe' && rolDemo !== 'empleado') { cerrarSesion('Tu sesión venció. Ingresa de nuevo.'); return { ok: false, status: 401, data: { error: 'Sesión vencida.' } }; }
+            if (method === 'GET' && url === '/api/datos') return out({ status: 200, json: R.listar(rolDemo, t) });
+            if ((m = url.match(/^\/api\/datos\/([a-z]+)\/(.+)$/))) {
+                var col = m[1], id = decodeURIComponent(m[2]), r;
+                if (col === 'usuarios' && id === uidDemo && (method === 'DELETE' || (body || {}).rol !== 'jefe'))
+                    return { ok: false, status: 409, data: { error: method === 'DELETE' ? 'No puedes eliminar tu propio usuario.' : 'No puedes quitarte a ti mismo el acceso de administrador.' } };
+                if (method === 'PUT') {
+                    r = R.ponerRegistro(rolDemo, rolDemo, t, col, id, body);
+                    aplicarGuardar(t, r.guardar);
+                    if (r.guardar) demoGuardar(t);
+                    return out(r);
+                }
+                if (method === 'DELETE') {
+                    r = R.borrarRegistro(rolDemo, t, col, id);
+                    if (r.borrar) { t[col] = t[col].filter(function (x) { return x.id !== id; }); aplicarGuardar(t, r.guardar); demoGuardar(t); }
+                    return out(r);
+                }
+            }
+            return { ok: false, status: 404, data: { error: 'Ruta no encontrada.' } };
+        }
+        function api(method, url, body) {
+            return listo.then(function () { return DEMO ? localApi(method, url, body) : apiReal(method, url, body); });
+        }
+        document.addEventListener('click', function (e) {
+            if (e.target.id === 'demo-cerrar') { $('#demo-banner').classList.add('d-none'); return; }
+            if (e.target.id !== 'demo-reset') return;
+            e.preventDefault();
+            if (!confirm('¿Borrar todos los datos de demostración de este navegador?')) return;
+            try { localStorage.removeItem(DEMO_KEY); } catch (x) {}
+            demoMem = null; location.reload();
+        });
+
+        var COLS = ['clientes', 'vehiculos', 'mecanicos', 'diagnosticos', 'ordenes', 'servicios', 'repuestos', 'usuarios'];
+        var db = {};
+        COLS.forEach(function (c) { db[c] = []; });
+        function syncDB(cb) {
+            api('GET', '/api/datos').then(function (r) {
+                if (r.ok) COLS.forEach(function (c) { db[c] = Array.isArray(r.data[c]) ? r.data[c] : []; });
+                if (cb) cb(r.ok);
+            });
+        }
+        function find(key, id) {
+            for (var i = 0; i < db[key].length; i++) if (db[key][i].id === id) return db[key][i];
+            return null;
+        }
+        function recientes(list) {
+            return list.slice().sort(function (a, b) { return (b.creado || '').localeCompare(a.creado || ''); });
+        }
+        function porNombre(a, b) { return norm(a.nombre).localeCompare(norm(b.nombre)); }
+        function nombreCliente(id) { var c = find('clientes', id); return c ? c.nombre : '(eliminado)'; }
+        function nombreMec(id) { var m = find('mecanicos', id); return m ? m.nombre : '(eliminado)'; }
+        function lblVeh(v) { return v.placa + ' — ' + v.marca + ' ' + v.modelo; }
+        function textoVeh(id) { var v = find('vehiculos', id); return v ? lblVeh(v) : '(vehículo eliminado)'; }
+        /* ==================== FIN C3 ==================== */
+
+
+        /* ==============================================================
+           INICIO C2: VENTANAS DEL PANEL
+           Cada bloque es UNA ventana del menú. Para agregar, quitar o
+           renombrar campos edita la lista "fields" de ese bloque.
+           Tipos: text, password, textarea, date, select, multi (elección
+                  múltiple), radio, repuestos, info y resumen.
+           kind  = qué se permite escribir (todo texto se escribe en MAYÚSCULA):
+                   nombre / letras (solo letras), texto (letras y números),
+                   libre (cualquier texto), anio (4 números), celular y entero
+                   (solo números), precio (número con decimales), placa,
+                   usuario (minúsculas, números, punto o guion bajo).
+           roles = quién ve esa ventana en el menú.
+           ============================================================== */
+        function estadoStock(r) {
+            var s = Number(r.stock) || 0, min = r.minimo == null ? 3 : Number(r.minimo);
+            return s <= 0 ? 'agotado' : (s <= min ? 'pocos' : 'ok');
+        }
+        function badgeStock(r) {
+            var e = estadoStock(r);
+            return e === 'agotado' ? '<span class="badge text-bg-danger">AGOTADO</span>'
+                : e === 'pocos' ? '<span class="badge text-bg-warning">POCOS · quedan ' + r.stock + '</span>'
+                : '<span class="badge text-bg-success">DISPONIBLE · ' + r.stock + '</span>';
+        }
+        function valoresOrden(o) {
+            var mo = o.manoObra != null ? Number(o.manoObra) : (o.items || []).reduce(function (a, i) { return a + (Number(i.precio) || 0); }, 0);
+            var rep = Number(o.totalRepuestos) || 0;
+            return { mo: mo, rep: rep, total: o.total != null ? Number(o.total) : mo + rep };
+        }
+        function fmtContrato(r) { return r.fechaContrato ? fmtF(r.fechaContrato) : '—'; }
+        var MODULES = [
+            {
+                key: 'clientes', menu: 'Clientes', icon: 'bi-people-fill', title: 'REGISTRO DE CLIENTES', roles: ['jefe', 'empleado'],
+                fields: [
+                    { id: 'nombre', label: 'NOMBRES Y APELLIDOS', icon: 'bi-person-fill', type: 'text', kind: 'nombre', max: 80 },
+                    { id: 'ci', label: 'CÉDULA DE IDENTIDAD (solo números)', icon: 'bi-person-vcard-fill', type: 'text', kind: 'ci', max: 10, inputmode: 'numeric' },
+                    { id: 'celular', label: 'NÚMERO DE CELULAR', icon: 'bi-telephone-fill', type: 'text', kind: 'celular', max: 10, inputmode: 'numeric' }
+                ],
+                titulo: function (r) { return esc(r.nombre); },
+                detalle: function (r) {
+                    var vs = db.vehiculos.filter(function (v) { return v.clienteId === r.id; });
+                    return 'C.I.: ' + esc(r.ci || '—') + ' · Cel: ' + esc(r.celular) + (vs.length ? ' · Vehículos: ' + esc(vs.map(function (v) { return v.placa; }).join(', ')) : ' · Sin vehículo registrado');
+                }
+            },
+            {
+                key: 'vehiculos', menu: 'Vehículos', icon: 'bi-car-front-fill', title: 'REGISTRO DE VEHÍCULOS', roles: ['jefe', 'empleado'],
+                fields: [
+                    { id: 'clienteId', label: 'DUEÑO DEL VEHÍCULO', icon: 'bi-person-badge-fill', type: 'select', from: 'clientes' },
+                    { id: 'placa', label: 'PLACA (ej. 1234ABC)', icon: 'bi-credit-card-2-front-fill', type: 'text', kind: 'placa', max: 7 },
+                    { id: 'marca', label: 'MARCA (ej. TOYOTA COROLLA)', icon: 'bi-car-front', type: 'text', kind: 'letras', max: 40 },
+                    { id: 'modelo', label: 'MODELO (AÑO, ej. 2015)', icon: 'bi-calendar3', type: 'text', kind: 'anio', max: 4, inputmode: 'numeric' },
+                    { id: 'color', label: 'COLOR', icon: 'bi-palette-fill', type: 'text', kind: 'letras', max: 30 }
+                ],
+                titulo: function (r) { return esc(lblVeh(r)); },
+                detalle: function (r) { return 'Color: ' + esc(r.color) + ' · Dueño: ' + esc(nombreCliente(r.clienteId)); }
+            },
+            {
+                key: 'mecanicos', menu: 'Mecánicos', icon: 'bi-person-gear', title: 'REGISTRO DE MECÁNICOS', roles: ['jefe'],
+                fields: [
+                    { id: 'nombre', label: 'NOMBRES Y APELLIDOS', icon: 'bi-person-fill', type: 'text', kind: 'nombre', max: 80 },
+                    { id: 'ci', label: 'CÉDULA DE IDENTIDAD (solo números)', icon: 'bi-person-vcard-fill', type: 'text', kind: 'ci', max: 10, inputmode: 'numeric' },
+                    { id: 'profesion', label: 'PROFESIÓN', icon: 'bi-briefcase-fill', type: 'text', kind: 'nombre', max: 60 },
+                    { id: 'celular', label: 'NÚMERO DE CELULAR', icon: 'bi-telephone-fill', type: 'text', kind: 'celular', max: 10, inputmode: 'numeric' },
+                    { id: 'fechaContrato', label: 'FECHA DE INICIO DE CONTRATO', icon: 'bi-calendar-check-fill', type: 'date' }
+                ],
+                titulo: function (r) { return esc(r.nombre); },
+                detalle: function (r) { return esc(r.profesion) + ' · C.I.: ' + esc(r.ci || '—') + ' · Cel: ' + esc(r.celular) + '<br>Contrato desde: ' + esc(fmtContrato(r)); }
+            },
+            {
+                key: 'usuarios', menu: 'Usuarios', icon: 'bi-shield-lock-fill', title: 'GESTIÓN DE USUARIOS', roles: ['jefe'],
+                ayuda: 'Aquí creas el usuario y la contraseña de cada mecánico o empleado. <b>ADMINISTRADOR</b> ve y puede todo. <b>EMPLEADO</b> solo trabaja con clientes, vehículos, diagnóstico y órdenes. Para que un mecánico de confianza sea administrador, toca ✏ y cámbiale el tipo.',
+                fields: [
+                    { id: 'mecanicoId', label: 'MECÁNICO (si es uno de ellos)', icon: 'bi-person-gear', type: 'select', from: 'mecanicos', opcional: true },
+                    { id: 'nombre', label: 'NOMBRE COMPLETO', icon: 'bi-person-fill', type: 'text', kind: 'nombre', max: 80 },
+                    { id: 'usuario', label: 'USUARIO (para ingresar)', icon: 'bi-at', type: 'text', kind: 'usuario', max: 20 },
+                    { id: 'clave', label: 'CONTRASEÑA (mínimo 6)', icon: 'bi-key-fill', type: 'password', kind: 'clave', max: 40 },
+                    { id: 'rol', label: 'TIPO DE USUARIO', icon: 'bi-shield-check', type: 'select', options: [['empleado', 'EMPLEADO · acceso restringido'], ['jefe', 'ADMINISTRADOR · acceso total']] }
+                ],
+                titulo: function (r) { return esc(r.nombre) + ' ' + (r.rol === 'jefe' ? '<span class="badge rol-jefe">ADMINISTRADOR</span>' : '<span class="badge rol-emp">EMPLEADO</span>'); },
+                detalle: function (r) { return 'Usuario: <b>' + esc(r.usuario) + '</b>' + (r.mecanicoId ? ' · Mecánico: ' + esc(nombreMec(r.mecanicoId)) : ''); },
+                clase: function (r) { return r.rol === 'jefe' ? 'st-admin' : ''; }
+            },
+            {
+                key: 'diagnosticos', menu: 'Diagnóstico', icon: 'bi-search', title: 'DIAGNÓSTICO DEL VEHÍCULO', roles: ['jefe', 'empleado'],
+                fields: [
+                    { id: 'clienteId', label: 'CLIENTE', icon: 'bi-person-fill', type: 'select', from: 'clientes' },
+                    { id: 'vehiculoId', label: 'VEHÍCULO', icon: 'bi-car-front-fill', type: 'select', from: 'vehiculos', filterBy: 'clienteId', info: true },
+                    { id: 'mecanicoId', label: 'MECÁNICO QUE DIAGNOSTICA', icon: 'bi-person-gear', type: 'select', from: 'mecanicos' },
+                    { id: 'servicios', label: 'TIPOS DE REPARACIÓN (elige uno o varios)', icon: 'bi-tools', type: 'multi', sinPrecio: true },
+                    { id: 'repuestos', label: 'REPUESTOS QUE SE USARÍAN (opcional · pasan marcados a la orden de trabajo)', icon: 'bi-box-seam', type: 'repuestos' },
+                    { id: 'descripcion', label: 'OBSERVACIONES DEL DIAGNÓSTICO', icon: 'bi-clipboard2-pulse-fill', type: 'textarea', kind: 'libre', required: false, max: 600 }
+                ],
+                titulo: function (r) { return esc(textoVeh(r.vehiculoId)); },
+                detalle: function (r) {
+                    var n = (r.servicios || []).map(function (id) { var s = find('servicios', id); return s ? s.nombre : ''; }).filter(Boolean);
+                    var rp = (r.repuestos || []).map(function (x) { var q = find('repuestos', x.id); return q ? q.nombre + ' ×' + x.cantidad : ''; }).filter(Boolean);
+                    return esc(nombreCliente(r.clienteId)) + ' · Mecánico: ' + esc(nombreMec(r.mecanicoId)) +
+                        '<br>' + esc(n.join(', ')) + (rp.length ? '<br><b>Repuestos:</b> ' + esc(rp.join(', ')) : '') + (r.descripcion ? '<br><i>' + esc(r.descripcion) + '</i>' : '');
+                }
+            },
+            {
+                key: 'ordenes', menu: 'Orden de Trabajo', icon: 'bi-clipboard2-check-fill', title: 'ORDEN DE TRABAJO', roles: ['jefe', 'empleado'],
+                fields: [
+                    { id: 'clienteId', label: 'CLIENTE', icon: 'bi-person-fill', type: 'select', from: 'clientes' },
+                    { id: 'vehiculoId', label: 'VEHÍCULO', icon: 'bi-car-front-fill', type: 'select', from: 'vehiculos', filterBy: 'clienteId', info: true },
+                    { id: 'mecanicoId', label: 'MECÁNICO A CARGO', icon: 'bi-person-gear', type: 'select', from: 'mecanicos' },
+                    { id: 'diagnostico', label: 'OBSERVACIÓN DEL DIAGNÓSTICO', icon: 'bi-clipboard2-pulse-fill', type: 'info' },
+                    { id: 'servicios', label: 'REPARACIONES A REALIZAR', icon: 'bi-tools', type: 'multi', niveles: true },
+                    {
+                        id: 'modalidad', label: '¿QUÉ SE COBRA?', icon: 'bi-cash-stack', type: 'radio', defecto: 'completa',
+                        options: [['completa', 'Reparación completa: mano de obra + repuestos'], ['mano', 'Solo mano de obra: el cliente trae sus repuestos']]
+                    },
+                    { id: 'repuestos', label: 'REPUESTOS A USAR (se descuentan del inventario)', icon: 'bi-box-seam', type: 'repuestos' },
+                    { id: 'resumen', label: 'RESUMEN DE COSTOS', icon: 'bi-calculator', type: 'resumen' },
+                    { id: 'estado', label: 'ESTADO', icon: 'bi-flag-fill', type: 'select', options: ESTADOS },
+                    { id: 'fechaEstimada', label: 'ENTREGA ESTIMADA', icon: 'bi-calendar-event-fill', type: 'date', required: false }
+                ],
+                titulo: function (o) { return esc(textoVeh(o.vehiculoId)); },
+                detalle: function (o) {
+                    var v = valoresOrden(o);
+                    return esc(nombreCliente(o.clienteId)) + '<br>' + badge(o.estado) +
+                        ' · Entrega estimada: ' + esc(o.fechaEstimada ? fmtF(o.fechaEstimada) : 'por definir') +
+                        '<br>' + (o.modalidad === 'mano' ? 'Solo mano de obra' : 'Reparación completa') + ' · <b>' + fmtBs(v.total) + '</b>';
+                }
+            },
+            {
+                key: 'repuestos', menu: 'Repuestos', icon: 'bi-box-seam', title: 'INVENTARIO DE REPUESTOS', roles: ['jefe'],
+                ayuda: 'Verde: hay. Amarillo: quedan pocos. Rojo: <b>AGOTADO</b>. Se descuentan solos al guardar una orden de trabajo.',
+                fields: [
+                    { id: 'nombre', label: 'NOMBRE DEL REPUESTO', icon: 'bi-box-seam', type: 'text', kind: 'texto', max: 80 },
+                    { id: 'precio', label: 'PRECIO DE CADA UNO (Bs)', icon: 'bi-cash-coin', type: 'text', kind: 'precio', max: 10, inputmode: 'decimal' },
+                    { id: 'stock', label: 'CANTIDAD DISPONIBLE', icon: 'bi-123', type: 'text', kind: 'entero', max: 6, inputmode: 'numeric' },
+                    { id: 'minimo', label: 'AVISAR "POCOS" CUANDO QUEDEN (o menos)', icon: 'bi-bell-fill', type: 'text', kind: 'entero', max: 4, inputmode: 'numeric', defecto: '3' }
+                ],
+                titulo: function (r) { return esc(r.nombre) + ' ' + badgeStock(r); },
+                detalle: function (r) {
+                    return fmtBs(r.precio) + ' cada uno · ' + (Number(r.stock) > 0 ? 'Quedan <b>' + r.stock + '</b>' : '<b class="text-danger">YA NO HAY ESTE REPUESTO</b>');
+                },
+                clase: function (r) { return 'st-' + estadoStock(r); },
+                orden: function (list) {
+                    var p = { agotado: 0, pocos: 1, ok: 2 };
+                    return list.slice().sort(function (a, b) { return (p[estadoStock(a)] - p[estadoStock(b)]) || porNombre(a, b); });
+                },
+                resumen: function (list) {
+                    var c = { ok: 0, pocos: 0, agotado: 0 };
+                    list.forEach(function (r) { c[estadoStock(r)]++; });
+                    return '<div class="d-flex flex-wrap gap-2">' +
+                        '<button type="button" class="chip-st st-ok" data-filtro="">Todos (' + list.length + ')</button>' +
+                        '<button type="button" class="chip-st st-ok" data-filtro="disponible">Disponibles (' + c.ok + ')</button>' +
+                        '<button type="button" class="chip-st st-pocos" data-filtro="pocos">Pocos (' + c.pocos + ')</button>' +
+                        '<button type="button" class="chip-st st-agotado" data-filtro="agotado">Agotados (' + c.agotado + ')</button></div>';
+                }
+            },
+            {
+                key: 'servicios', menu: 'Precios', icon: 'bi-cash-coin', title: 'MANO DE OBRA POR REPARACIÓN', roles: ['jefe'],
+                ayuda: 'Cada reparación tiene un <b>precio fijo</b> de mano de obra. Una orden ya hecha conserva el precio con el que se cobró.',
+                fields: [
+                    { id: 'nombre', label: 'NOMBRE DE LA REPARACIÓN', icon: 'bi-tools', type: 'text', kind: 'libre', max: 120 },
+                    { id: 'precio', label: 'PRECIO FIJO (Bs)', icon: 'bi-cash-coin', type: 'text', kind: 'precio', max: 10, inputmode: 'decimal' }
+                ],
+                titulo: function (r) { return esc(r.nombre); },
+                detalle: function (r) {
+                    return '<span class="nivel-tag nv-normal">' + fmtBs(R.precioNivel(r)) + '</span>';
+                },
+                orden: function (list) { return list.slice().sort(porNombre); }
+            },
+            { key: 'historial', menu: 'Historial', icon: 'bi-clock-history', title: 'HISTORIAL DE TRABAJOS', roles: ['jefe'], special: 'historial' },
+            { key: 'ganancias', menu: 'Ganancias', icon: 'bi-graph-up-arrow', title: 'GANANCIAS', roles: ['jefe'], special: 'ganancias' }
+        ];
+        // Orden del menú: usuarios siempre al final
+        var ORDEN_MENU = ['clientes', 'vehiculos', 'diagnosticos', 'ordenes', 'repuestos', 'servicios', 'historial', 'ganancias', 'mecanicos', 'usuarios'];
+        MODULES.sort(function (a, b) { return ORDEN_MENU.indexOf(a.key) - ORDEN_MENU.indexOf(b.key); });
+        var MOD = {};
+        MODULES.forEach(function (m) { MOD[m.key] = m; });
+        /* ==================== FIN C2: VENTANAS DEL PANEL ==================== */
+
+
+        /* ==============================================================
+           INICIO C4: CAMBIO DE PANTALLAS Y ACCESO
+           ============================================================== */
+        var current = 'clientes', editId = null, msgTimer = null, filtroLista = '';   // filtroLista: solo lo usan los botones de colores de Repuestos
+        var H = { estado: 'todos', q: '' }, G = { modo: 'dia', mes: '', dia: '' };   // filtros de Historial y Ganancias
+
+        function showView(name) {
+            if (name === 'panel' && !isAuth()) name = 'login';
+            if (name === 'login' && isAuth()) name = 'panel';      // si ya ingresó, entra directo al panel
+            document.querySelectorAll('.view').forEach(function (v) {
+                v.classList.toggle('d-none', v.id !== 'view-' + name);
+            });
+            window.scrollTo(0, 0);
+            if (name === 'panel') prepararPanel();
+        }
+        function cerrarSesion(aviso) {
+            sset(TOKEN_KEY, ''); sset(ROL_KEY, ''); sset(USER_KEY, '');
+            showView(aviso ? 'login' : 'home');
+            var er = $('#login-error');
+            if (aviso) { er.textContent = aviso; er.classList.remove('d-none'); }
+        }
+        // Cualquier elemento con data-go="pantalla" cambia de pantalla al hacer clic
+        document.addEventListener('click', function (e) {
+            var t = e.target.closest('[data-go]');
+            if (t) { e.preventDefault(); showView(t.getAttribute('data-go')); }
+        });
+        // Cierra el menú del celular al elegir un enlace
+        document.querySelectorAll('#navbarNav .nav-link, #navbarNav [data-go]').forEach(function (a) {
+            a.addEventListener('click', function () {
+                var c = document.getElementById('navbarNav');
+                if (c.classList.contains('show') && window.bootstrap) bootstrap.Collapse.getOrCreateInstance(c).hide();
+            });
+        });
+
+        // Formulario de acceso del personal (lo valida el servidor)
+        $('#form-login').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var form = this, er = $('#login-error'), btn = form.querySelector('button[type=submit]');
+            er.classList.add('d-none'); btn.disabled = true;
+            api('POST', '/api/login', { usuario: $('#l-usuario').value.trim(), clave: $('#l-clave').value }).then(function (r) {
+                btn.disabled = false;
+                if (r.ok) {
+                    sset(TOKEN_KEY, r.data.token); sset(ROL_KEY, r.data.rol); sset(USER_KEY, r.data.usuario);
+                    form.reset(); current = 'clientes'; editId = null;
+                    showView('panel');
+                } else {
+                    er.textContent = r.data.error || 'Usuario o contraseña incorrectos.';
+                    er.classList.remove('d-none');
+                }
+            });
+        });
+        $('#btn-logout').addEventListener('click', function () { cerrarSesion(); });
+        /* ==================== FIN C4: CAMBIO DE PANTALLAS Y ACCESO ==================== */
+
+
+        /* ==============================================================
+           INICIO C5: PANEL (menú, formularios, lista y edición)
+           ============================================================== */
+        function modsDelRol() { return MODULES.filter(function (m) { return m.roles.indexOf(rol()) !== -1; }); }
+
+        function prepararPanel() {
+            var jefe = rol() === 'jefe', b = $('#panel-rol');
+            b.textContent = jefe ? 'Administrador · acceso total' : 'Empleado · acceso restringido';
+            b.className = 'badge rol-badge ' + (jefe ? 'rol-jefe' : 'rol-emp');
+            buildMenus();
+            if (modsDelRol().every(function (m) { return m.key !== current; })) current = modsDelRol()[0].key;
+            syncDB(function () { renderPanel(current); });
+        }
+        function buildMenus() {
+            var html = modsDelRol().map(function (m) {
+                return '<a href="#" class="btn-menu" data-mod="' + m.key + '"><i class="bi ' + m.icon + '"></i> ' + esc(m.menu) + '</a>';
+            }).join('');
+            $('#menu-desktop').innerHTML = html;
+            $('#menu-mobile').innerHTML = html;
+        }
+        document.addEventListener('click', function (e) {
+            var t = e.target.closest('[data-mod]');
+            if (!t) return;
+            e.preventDefault();
+            var k = t.getAttribute('data-mod');
+            renderPanel(k);
+            // Al abrir una ventana se trae lo último (lo que registraron otros dispositivos o usuarios)
+            syncDB(function (ok) {
+                if (!ok || current !== k || editId) return;
+                if (MOD[k].special) RENDER_ESPECIAL[MOD[k].special](); else { renderRecords(); refrescarOpciones(); }
+            });
+        });
+
+        function campo(id) { return MOD[current].fields.filter(function (f) { return f.id === id; })[0]; }
+        function radioVal(name) { var el = $('#panel-form input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+
+        function optLabel(from, r) { return from === 'vehiculos' ? lblVeh(r) : r.nombre; }
+        function opcionesSelect(f, formEl) {
+            if (f.options) return f.options.map(function (o) { return o instanceof Array ? { v: o[0], t: o[1] } : { v: o, t: o }; });
+            var list = db[f.from].slice();
+            if (f.filterBy) {
+                var cid = formEl.elements[f.filterBy] ? formEl.elements[f.filterBy].value : '';
+                list = recientes(list.filter(function (r) { return cid && r[f.filterBy] === cid; }));
+            } else list.sort(porNombre);
+            return list.map(function (r) { return { v: r.id, t: optLabel(f.from, r) }; });
+        }
+        // Llena un <select>. Si el campo depende de otro (vehículo según cliente), elige el primero por defecto
+        function llenarSelect(f, formEl, valor) {
+            var sel = formEl.elements[f.id], hint = $('#hint_' + f.id), opts = opcionesSelect(f, formEl), h, txt = '';
+            if (f.options) {
+                h = opts.map(function (o) { return '<option value="' + esc(o.v) + '">' + esc(o.t) + '</option>'; }).join('');
+            } else if (!opts.length) {
+                h = f.opcional ? '<option value="">— Ninguno —</option>' : '<option value="">— Sin opciones —</option>';
+                if (f.opcional) txt = '';
+                else if (f.filterBy) {
+                    txt = formEl.elements[f.filterBy].value ? 'Este cliente no tiene vehículo registrado. Regístralo primero en «Vehículos».' : 'Elige primero al cliente.';
+                } else {
+                    var mm = MOD[f.from];
+                    txt = 'Primero registra al menos uno en «' + (mm ? mm.menu : f.from) + '».';
+                }
+            } else {
+                h = (f.opcional ? '<option value="">— Ninguno —</option>' : (f.filterBy ? '' : '<option value="">Selecciona…</option>')) +
+                    opts.map(function (o) { return '<option value="' + esc(o.v) + '">' + esc(o.t) + '</option>'; }).join('');
+            }
+            sel.innerHTML = h;
+            if (valor && opts.some(function (o) { return o.v === valor; })) sel.value = valor;
+            else if (f.filterBy && opts.length) sel.value = opts[0].v;
+            else sel.value = '';
+            if (hint) { hint.textContent = txt; hint.className = 'form-text small mb-3' + (txt ? ' text-danger' : ''); }
+        }
+
+        // ----- Elección múltiple de reparaciones (casillas con buscador y precio fijo) -----
+        function precioDeNivel(sid) {      // mano de obra (precio fijo) de una reparación
+            if (editId && current === 'ordenes') {
+                var o = find('ordenes', editId), it = o && (o.items || []).filter(function (i) { return i.id === sid; })[0];
+                if (it) return Number(it.precio) || 0;       // los trabajos ya hechos conservan su precio
+            }
+            var s = find('servicios', sid);
+            return s ? R.precioNivel(s) : 0;
+        }
+        function multiItems(fd, marc) {
+            var list = db.servicios.slice().sort(porNombre);
+            if (!list.length) return '<p class="small text-suave mb-0 p-2">No hay reparaciones. El administrador debe crearlas en «Precios».</p>';
+            return list.map(function (s) {
+                var on = marc.indexOf(s.id) !== -1;
+                var cab = '<label class="multi-item"><input type="checkbox" value="' + esc(s.id) + '"' + (on ? ' checked' : '') + '><span>' + esc(s.nombre) + '</span>' +
+                    (fd.niveles ? '<em data-precio="' + esc(s.id) + '">' + fmtBs(precioDeNivel(s.id)) + '</em>' : '') + '</label>';
+                return '<div class="srv-item" data-t="' + esc(norm(s.nombre)) + '">' + cab + '</div>';
+            }).join('');
+        }
+        function marcados(id) { return $$('#f_' + id + ' input[type=checkbox]:checked').map(function (c) { return c.value; }); }
+        function aplicarBusquedaMulti(inp) {
+            var q = norm(inp.value), w = inp.closest('[data-multi]');
+            $$('.srv-item', w).forEach(function (l) { l.style.display = !q || l.getAttribute('data-t').indexOf(q) !== -1 ? '' : 'none'; });
+        }
+        function marcarMulti(id, arr) {
+            var q = $('[data-multi="' + id + '"] [data-multi-search]');
+            $('#f_' + id).innerHTML = multiItems(campo(id), arr);
+            if (q) aplicarBusquedaMulti(q);
+            actualizarMulti();
+        }
+        function actualizarMulti() {
+            $$('[data-multi]').forEach(function (w) {
+                var id = w.getAttribute('data-multi'), fd = campo(id), sel = marcados(id), info = $('#multiinfo_' + id);
+                if (!fd || !info) return;
+                var total = sel.reduce(function (a, x) { return a + precioDeNivel(x); }, 0);
+                info.innerHTML = !sel.length ? 'Ninguna seleccionada.'
+                    : '<b>' + sel.length + '</b> seleccionada(s)' + (fd.niveles ? ' · Mano de obra: <b class="text-dorado">' + fmtBs(total) + '</b>' : '');
+            });
+            actualizarResumen();
+        }
+
+        // ----- Repuestos del inventario (solo en la orden de trabajo) -----
+        function repEnOrden(rid) {                // lo que esta orden ya tenía de ese repuesto (al corregirla)
+            if (!editId || current !== 'ordenes') return null;
+            var o = find('ordenes', editId);
+            if (!o || o.modalidad === 'mano') return null;
+            return (o.repuestos || []).filter(function (x) { return x.id === rid; })[0] || null;
+        }
+        function repDisponible(r) {
+            var prev = repEnOrden(r.id);
+            return (Number(r.stock) || 0) + (prev ? Number(prev.cantidad) || 0 : 0);
+        }
+        function precioRep(rid) {
+            var prev = repEnOrden(rid);
+            if (prev) return Number(prev.precio) || 0;
+            var r = find('repuestos', rid);
+            return r ? Number(r.precio) || 0 : 0;
+        }
+        function repuestosItems(sel) {            // sel = { idRepuesto: cantidad }
+            var list = db.repuestos.slice().sort(porNombre);
+            if (!list.length) return '<p class="small text-suave mb-0 p-2">No hay repuestos en el inventario. El jefe debe registrarlos en «Repuestos».</p>';
+            return list.map(function (r) {
+                var disp = repDisponible(r), on = sel[r.id] != null, agot = disp <= 0 && !on;
+                var st = badgeStock({ stock: disp, minimo: r.minimo });
+                return '<div class="rep-item" data-t="' + esc(norm(r.nombre)) + '"><label class="multi-item' + (agot ? ' agotado' : '') + '">' +
+                    '<input type="checkbox" value="' + esc(r.id) + '"' + (on ? ' checked' : '') + (agot ? ' disabled' : '') + '>' +
+                    '<span>' + esc(r.nombre) + '</span><em>' + fmtBs(precioRep(r.id)) + ' c/u</em></label>' +
+                    '<div class="rep-det">' + st + (agot ? ' <small class="text-danger">Ya no hay este repuesto</small>' : '') +
+                    '<input type="text" inputmode="numeric" data-kind="entero" maxlength="4" class="form-control form-control-sm rep-qty" data-qty="' + esc(r.id) + '" data-max="' + disp + '" value="' + (on ? sel[r.id] : 1) + '"' + (on ? '' : ' disabled') + ' title="Cantidad"></div></div>';
+            }).join('');
+        }
+        function leerRepuestos() {
+            return $$('#f_repuestos input[type=checkbox]:checked').map(function (c) {
+                var q = $('[data-qty="' + c.value + '"]');
+                return { id: c.value, cantidad: Number(q && q.value) || 0 };
+            });
+        }
+        function aplicarBusquedaRep(inp) {
+            var q = norm(inp.value);
+            $$('.rep-item').forEach(function (l) { l.style.display = !q || l.getAttribute('data-t').indexOf(q) !== -1 ? '' : 'none'; });
+        }
+        function aplicarModalidad() {
+            var w = $('#wrap-repuestos');
+            if (w) w.classList.toggle('d-none', radioVal('modalidad') === 'mano');
+            actualizarResumen();
+        }
+        // Resumen en vivo: mano de obra + repuestos = total, y cuánto saldría solo la mano de obra
+        function actualizarResumen() {
+            var box = $('#f_resumen');
+            if (!box) return;
+            var sel = marcados('servicios'), mo = sel.reduce(function (a, x) { return a + precioDeNivel(x); }, 0);
+            var completa = radioVal('modalidad') !== 'mano', rep = 0, unid = 0;
+            if (completa) leerRepuestos().forEach(function (x) { rep += precioRep(x.id) * (x.cantidad || 0); unid += x.cantidad || 0; });
+            var linea = function (t, v, cls) { return '<div class="linea-res' + (cls || '') + '"><span>' + t + '</span><b>' + v + '</b></div>'; };
+            box.innerHTML = linea('Mano de obra (' + sel.length + ' reparación/es)', fmtBs(mo)) +
+                (completa ? linea('Repuestos (' + unid + ' unidad/es)', fmtBs(rep)) : '<div class="small text-suave px-2">Repuestos: no se cobran (los trae el cliente).</div>') +
+                linea('TOTAL A COBRAR', fmtBs(mo + rep), ' total-linea') +
+                (completa && rep > 0 ? '<div class="small text-suave px-2 pt-1">Solo mano de obra saldría: <b class="text-dorado">' + fmtBs(mo) + '</b></div>' : '');
+        }
+
+        // Dibuja un campo del formulario
+        function fieldHTML(f) {
+            var id = 'f_' + f.id, req = f.required === false ? '' : ' required', lab = '<label for="' + id + '"><i class="bi ' + f.icon + ' me-2"></i>' + esc(f.label) + '</label>';
+            var etq = '<label class="form-label small fw-bold text-dorado"><i class="bi ' + f.icon + ' me-1"></i>' + esc(f.label) + '</label>';
+            if (f.type === 'select') {
+                return '<div class="form-floating mb-1"><select class="form-select" id="' + id + '" name="' + f.id + '"' + req + '></select>' + lab + '</div>' +
+                    '<div class="form-text small mb-3" id="hint_' + f.id + '"></div>' +
+                    (f.info ? '<div class="small mb-3 info-auto" id="info-vehiculo"></div>' : '');
+            }
+            if (f.type === 'multi') {
+                return '<div class="mb-3" data-multi="' + f.id + '">' + etq +
+                    '<input type="search" class="form-control form-control-sm mb-2" placeholder="Buscar reparación…" data-multi-search autocomplete="off">' +
+                    '<div class="multi-box" id="' + id + '"></div><div class="form-text" id="multiinfo_' + f.id + '"></div></div>';
+            }
+            if (f.type === 'radio') {
+                return '<div class="mb-3">' + etq + f.options.map(function (o, i) {
+                    return '<div class="form-check mb-1"><input class="form-check-input" type="radio" name="' + f.id + '" id="' + id + '_' + i + '" value="' + esc(o[0]) + '"' + (o[0] === f.defecto ? ' checked' : '') + '>' +
+                        '<label class="form-check-label" for="' + id + '_' + i + '">' + esc(o[1]) + '</label></div>';
+                }).join('') + '</div>';
+            }
+            if (f.type === 'info') return '<div class="mb-3">' + etq + '<div class="obs-box" id="' + id + '">—</div></div>';
+            if (f.type === 'repuestos') {
+                return '<div class="mb-3" id="wrap-repuestos">' + etq +
+                    '<input type="search" class="form-control form-control-sm mb-2" placeholder="Buscar repuesto…" data-rep-search autocomplete="off">' +
+                    '<div class="multi-box" id="' + id + '"></div></div>';
+            }
+            if (f.type === 'resumen') return '<div class="mb-3">' + etq + '<div class="resumen-orden" id="' + id + '"></div></div>';
+            if (f.type === 'textarea') {
+                return '<div class="form-floating mb-3"><textarea class="form-control" id="' + id + '" name="' + f.id + '" placeholder="' + esc(f.label) + '" style="height:110px"' + (f.kind ? ' data-kind="' + f.kind + '"' : '') +
+                    (f.max ? ' maxlength="' + f.max + '"' : '') + req + '></textarea>' + lab + '</div>';
+            }
+            var attrs = (f.kind ? ' data-kind="' + f.kind + '"' : '') + (f.max ? ' maxlength="' + f.max + '"' : '') + (f.inputmode ? ' inputmode="' + f.inputmode + '"' : '') +
+                (f.type === 'password' ? ' autocomplete="new-password"' : '');
+            return '<div class="form-floating mb-3"><input type="' + f.type + '" class="form-control" id="' + id + '" name="' + f.id + '" placeholder="' + esc(f.label) + '" autocomplete="off"' + attrs + req + '>' + lab + '</div>';
+        }
+
+        function renderForm() {
+            var m = MOD[current], f = $('#panel-form');
+            f.innerHTML = m.fields.map(fieldHTML).join('') +
+                '<button class="btn btn-warning w-100 py-3" type="submit"><i class="bi bi-save-fill me-2"></i><span id="btn-save-text">GUARDAR</span></button>';
+            m.fields.forEach(function (fd) {
+                if (fd.type === 'select') llenarSelect(fd, f, null);
+                if (fd.type === 'multi') $('#f_' + fd.id).innerHTML = multiItems(fd, [], {});
+                if (fd.type === 'repuestos') $('#f_' + fd.id).innerHTML = repuestosItems({});
+                if (fd.defecto && fd.type === 'text') f.elements[fd.id].value = fd.defecto;
+            });
+            if (current === 'ordenes') f.elements.estado.value = 'Recibido';
+            actualizarMulti(); aplicarModalidad();
+            $('#edit-banner').classList.add('d-none');
+        }
+
+        var RENDER_ESPECIAL = {
+            historial: function () { renderHistorial(); },
+            ganancias: function () { renderGanancias(); }
+        };
+        // Muestra la ventana elegida del menú
+        function renderPanel(key) {
+            current = key; editId = null;
+            var m = MOD[key];
+            $('#panel-title').textContent = m.title;
+            $('#panel-icon').className = 'bi ' + m.icon;
+            filtroLista = '';
+            var ay = $('#panel-ayuda');
+            ay.innerHTML = m.ayuda ? '<i class="bi bi-info-circle-fill me-1"></i>' + m.ayuda : '';
+            ay.classList.toggle('d-none', !m.ayuda);
+            $('#panel-normal').classList.toggle('d-none', !!m.special);
+            $('#panel-hist').classList.toggle('d-none', !m.special);
+            if (m.special) RENDER_ESPECIAL[m.special](); else { renderForm(); renderRecords(); }
+            $$('[data-mod]').forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-mod') === key); });
+        }
+
+        // Al elegir cliente → aparece su vehículo ya registrado; al elegir vehículo → se muestra su diagnóstico
+        function onCliente() {
+            var m = MOD[current], f = $('#panel-form');
+            m.fields.forEach(function (fd) { if (fd.filterBy) llenarSelect(fd, f, null); });
+            onVehiculo();
+        }
+        function ultimoDiag(vid) {
+            return recientes(db.diagnosticos.filter(function (x) { return x.vehiculoId === vid; }))[0] || null;
+        }
+        function onVehiculo() {
+            var f = $('#panel-form'), info = $('#info-vehiculo');
+            if (!f.elements.vehiculoId) return;
+            var vid = f.elements.vehiculoId.value, av = [], ob = $('#f_diagnostico');
+            if (info) info.innerHTML = '';
+            if (ob) ob.innerHTML = '—';
+            if (!vid) { actualizarMulti(); return; }
+            if (current === 'ordenes') {
+                var d = ultimoDiag(vid);
+                if (ob) {
+                    var nombres = d ? (d.servicios || []).map(function (id) { var s = find('servicios', id); return s ? s.nombre : ''; }).filter(Boolean) : [];
+                    ob.innerHTML = d ? '<div>' + (d.descripcion ? esc(d.descripcion) : '<i>(sin observaciones)</i>') + '</div>' +
+                        '<div class="small text-suave mt-1">Reparaciones indicadas: ' + esc(nombres.join(', ') || '—') + ' · Diagnosticó: ' + esc(nombreMec(d.mecanicoId)) + '</div>' +
+                        ((d.repuestos || []).length ? '<div class="small text-suave">Repuestos indicados: ' + esc((d.repuestos || []).map(function (x) { var q = find('repuestos', x.id); return q ? q.nombre + ' ×' + x.cantidad : ''; }).filter(Boolean).join(', ') || '—') + '</div>' : '')
+                        : '<i>Este vehículo aún no tiene diagnóstico registrado.</i>';
+                }
+                var curso = db.ordenes.filter(function (o) { return o.vehiculoId === vid && o.estado !== 'Entregado' && o.id !== editId; });
+                if (curso.length) av.push('<span class="text-warning">⚠ Este vehículo ya tiene una orden en curso (' + esc(curso[0].estado) + ').</span>');
+                if (!editId && d) {
+                    marcarMulti('servicios', d.servicios || [], {});
+                    if (find('mecanicos', d.mecanicoId)) f.elements.mecanicoId.value = d.mecanicoId;
+                    // Los repuestos del diagnóstico quedan marcados por defecto (si todavía hay en inventario)
+                    var mapaRep = {}, faltan = 0;
+                    (d.repuestos || []).forEach(function (x) {
+                        var rp = find('repuestos', x.id), disp = rp ? repDisponible(rp) : 0;
+                        if (!rp || disp <= 0) { faltan++; return; }
+                        mapaRep[x.id] = Math.min(Number(x.cantidad) || 1, disp);
+                    });
+                    if ($('#f_repuestos')) { $('#f_repuestos').innerHTML = repuestosItems(mapaRep); aplicarModalidad(); }
+                    av.push('<span class="text-success">✔ Se cargaron las reparaciones, el mecánico' + ((d.repuestos || []).length ? ' y los repuestos' : '') + ' del último diagnóstico.</span>');
+                    if (faltan) av.push('<span class="text-warning">⚠ ' + faltan + ' repuesto(s) del diagnóstico ya no están disponibles en el inventario.</span>');
+                }
+            }
+            if (info) info.innerHTML = av.join('<br>');
+            actualizarMulti();
+        }
+        document.addEventListener('change', function (e) {
+            var t = e.target;
+            if (!t.closest || !t.closest('#panel-form')) return;
+            if (t.name === 'clienteId') onCliente();
+            else if (t.name === 'vehiculoId') onVehiculo();
+            else if (t.name === 'modalidad') aplicarModalidad();
+            else if (t.name === 'mecanicoId' && current === 'usuarios') {        // al elegir un mecánico se rellena su nombre
+                var mc = find('mecanicos', t.value);
+                if (mc && !$('#panel-form').elements.nombre.value) $('#panel-form').elements.nombre.value = mc.nombre;
+            }
+            else if (t.type === 'checkbox' && t.closest('#f_repuestos')) {
+                var q = $('[data-qty="' + t.value + '"]');
+                if (q) q.disabled = !t.checked;
+                actualizarResumen();
+            }
+            else if (t.type === 'checkbox') actualizarMulti();
+            else if (t.classList.contains('rep-qty')) actualizarResumen();
+        });
+
+        // ----- Lista de registros guardados -----
+        function renderRecords() {
+            var m = MOD[current], box = $('#panel-records');
+            if (m.special) return;
+            var list = db[current].slice();
+            if (current === 'ordenes') list = list.filter(function (o) { return o.estado !== 'Entregado'; });
+            list = m.orden ? m.orden(list) : recientes(list);
+            $('#panel-count').textContent = list.length;
+            $('#panel-resumen').innerHTML = m.resumen ? m.resumen(db[current]) : '';
+            var q = norm(filtroLista);
+            if (q) list = list.filter(function (r) { return norm(sinTags(m.titulo(r) + ' ' + m.detalle(r))).indexOf(q) !== -1; });
+            if (!list.length) { box.innerHTML = '<p class="text-suave small mb-0">' + (q ? 'Sin resultados.' : 'Aún no hay registros.') + '</p>'; return; }
+            var jefe = rol() === 'jefe';
+            box.innerHTML = list.map(function (r) {
+                return '<div class="reg-item ' + (m.clase ? m.clase(r) : '') + '"><div class="reg-main"><div class="reg-title">' + m.titulo(r) + '</div><div class="reg-det">' + m.detalle(r) + '</div></div>' +
+                    '<div class="reg-actions"><button type="button" class="btn btn-sm btn-outline-warning py-0" data-edit="' + esc(r.id) + '" title="Corregir"><i class="bi bi-pencil-square"></i></button>' +
+                    (jefe ? '<button type="button" class="btn btn-sm btn-outline-danger py-0" data-del="' + esc(r.id) + '" title="Eliminar"><i class="bi bi-trash"></i></button>' : '') + '</div></div>';
+            }).join('');
+        }
+        document.addEventListener('click', function (e) {     // filtros de colores del inventario
+            var c = e.target.closest('[data-filtro]');
+            if (!c) return;
+            filtroLista = c.getAttribute('data-filtro');
+            renderRecords();
+        });
+
+        // Corregir un registro: se carga en el formulario
+        function startEdit(id) {
+            var m = MOD[current], r = find(current, id), f = $('#panel-form');
+            if (!r) return;
+            renderForm();
+            editId = id;
+            m.fields.filter(function (fd) { return fd.type === 'select' && !fd.filterBy; }).forEach(function (fd) { llenarSelect(fd, f, r[fd.id]); });
+            m.fields.filter(function (fd) { return fd.type === 'select' && fd.filterBy; }).forEach(function (fd) { llenarSelect(fd, f, r[fd.id]); });
+            m.fields.forEach(function (fd) {
+                if (fd.type === 'multi') {
+                    marcarMulti(fd.id, r[fd.id] || []);
+                }
+                else if (fd.type === 'radio') { var rb = $('#panel-form input[name="' + fd.id + '"][value="' + (r[fd.id] || fd.defecto) + '"]'); if (rb) rb.checked = true; }
+                else if (fd.type === 'repuestos') {
+                    var mapa = {};
+                    if (r.modalidad !== 'mano') (r.repuestos || []).forEach(function (x) { mapa[x.id] = x.cantidad; });
+                    $('#f_' + fd.id).innerHTML = repuestosItems(mapa);
+                }
+                else if (fd.type !== 'select' && fd.type !== 'info' && fd.type !== 'resumen') {
+                    var val = r[fd.id];
+                    if (val == null && fd.id === 'precio') val = R.precioNivel(r);   // reparaciones antiguas con 3 precios: se usa el «normal»
+                    f.elements[fd.id].value = val == null ? '' : val;
+                }
+            });
+            aplicarModalidad(); actualizarMulti(); onVehiculo();
+            if (current === 'usuarios') {
+                $('label[for=f_clave]').innerHTML = '<i class="bi bi-key-fill me-2"></i>NUEVA CONTRASEÑA (vacía = no cambiarla)';
+                f.elements.clave.value = '';
+            }
+            $('#btn-save-text').textContent = 'ACTUALIZAR';
+            $('#edit-banner').classList.remove('d-none');
+            f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        $('#btn-cancel-edit').addEventListener('click', function () { renderPanel(current); });
+
+        $('#panel-records').addEventListener('click', function (e) {
+            var be = e.target.closest('[data-edit]');
+            if (be) { startEdit(be.getAttribute('data-edit')); return; }
+            var b = e.target.closest('[data-del]');
+            if (!b) return;
+            if (!confirm('¿Eliminar este registro?')) return;
+            var key = current;
+            api('DELETE', '/api/datos/' + key + '/' + encodeURIComponent(b.getAttribute('data-del'))).then(function (r) {
+                if (!r.ok) { msg(r.data.error || 'No se pudo eliminar. Revisa tu conexión.', 'danger'); return; }
+                syncDB(function () { renderPanel(key); msg('Registro eliminado.', 'success'); });
+            });
+        });
+
+        function msg(text, type) {
+            var el = $('#panel-msg');
+            el.className = 'alert alert-' + type + ' py-2 small';
+            el.textContent = text;
+            clearTimeout(msgTimer);
+            msgTimer = setTimeout(function () { el.classList.add('d-none'); }, 5000);
+        }
+
+        // ----- Validación y guardado -----
+        function validarCampo(f, v) {
+            if (!v) return f.required === false ? null : 'Completa el campo «' + f.label + '».';
+            if (f.kind === 'letras' && (v.length < 3 || !RE_LETRAS.test(v))) return '«' + f.label + '»: solo se permiten letras (mínimo 3).';
+            if (f.kind === 'anio' && !(/^[0-9]{4}$/.test(v) && +v >= 1950 && +v <= new Date().getFullYear() + 1)) return 'El modelo es el año del vehículo: 4 números (ejemplo: 2015).';
+            if (f.kind === 'usuario' && !/^[a-z0-9_.]{3,20}$/.test(v)) return 'El usuario debe tener de 3 a 20 caracteres: minúsculas, números, punto o guion bajo.';
+            if (f.kind === 'clave' && (v.length < 6 || v.length > 40)) return 'La contraseña debe tener de 6 a 40 caracteres.';
+            if (f.kind === 'nombre' && (v.length < 3 || !RE_NOMBRE.test(v))) return '«' + f.label + '»: solo se permiten letras (mínimo 3).';
+            if (f.kind === 'celular' && !/^[0-9]{7,10}$/.test(v)) return 'El celular debe tener entre 7 y 10 números.';
+            if (f.kind === 'ci' && !/^[0-9]{5,10}$/.test(v)) return 'La cédula de identidad debe tener solo números (de 5 a 10).';
+            if (f.kind === 'placa' && !RE_PLACA.test(v)) return 'La placa debe tener 4 números y 3 letras en mayúscula (ejemplo: 1234ABC).';
+            if (f.kind === 'texto' && v.length < 2) return '«' + f.label + '» es muy corto.';
+            if (f.kind === 'precio' && (isNaN(Number(v)) || Number(v) < 0)) return 'El precio debe ser un número mayor o igual a 0.';
+            if (f.kind === 'entero' && !/^[0-9]+$/.test(v)) return '«' + f.label + '»: escribe un número entero (0 o más).';
+            return null;
+        }
+        $('#panel-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var form = this, m = MOD[current], rec = {}, err = null, malo = null;
+            $$('.is-invalid', form).forEach(function (x) { x.classList.remove('is-invalid'); });
+            for (var i = 0; i < m.fields.length && !err; i++) {
+                var f = m.fields[i];
+                if (f.type === 'info' || f.type === 'resumen') continue;
+                if (f.type === 'multi') {
+                    rec[f.id] = marcados(f.id);
+                    if (!rec[f.id].length) { err = 'Elige al menos un tipo de reparación.'; malo = $('[data-multi="' + f.id + '"]'); }
+                } else if (f.type === 'radio') {
+                    rec[f.id] = radioVal(f.id) || f.defecto;
+                } else if (f.type === 'repuestos') {
+                    rec[f.id] = rec.modalidad === 'mano' ? [] : leerRepuestos();
+                    for (var k = 0; k < rec[f.id].length && !err; k++) {
+                        var x = rec[f.id][k], rp = find('repuestos', x.id), q = $('[data-qty="' + x.id + '"]');
+                        if (!(x.cantidad >= 1) || x.cantidad !== Math.floor(x.cantidad)) { err = 'La cantidad de «' + (rp ? rp.nombre : 'repuesto') + '» debe ser un número entero desde 1.'; malo = q; }
+                        else if (rp && x.cantidad > repDisponible(rp)) { err = 'No hay suficientes «' + rp.nombre + '»: solo quedan ' + repDisponible(rp) + '.'; malo = q; }
+                    }
+                } else {
+                    rec[f.id] = (form.elements[f.id].value || '').trim();
+                    if (f.id === 'clave' && editId && !rec[f.id]) continue;          // al corregir un usuario, vacía = no cambia
+                    var e1 = f.type === 'select' && !rec[f.id] ? (f.opcional ? null : 'Elige una opción en «' + f.label + '».') : validarCampo(f, rec[f.id]);
+                    if (e1) { err = e1; malo = form.elements[f.id]; }
+                }
+            }
+            if (!err && current === 'vehiculos' && db.vehiculos.some(function (v) { return v.id !== editId && v.placa === rec.placa; })) {
+                err = 'Ya existe un vehículo registrado con esa placa.'; malo = form.elements.placa;
+            }
+            if (err) { if (malo && malo.classList) malo.classList.add('is-invalid'); msg(err, 'danger'); if (malo && malo.focus) malo.focus(); return; }
+
+            var previa = editId ? find(current, editId) : null;
+            if (current === 'ordenes' && rec.estado === 'Entregado' && (!previa || previa.estado !== 'Entregado')) {
+                if (!confirm('Al marcar la orden como ENTREGADO pasará al Historial de trabajos y a las Ganancias' + (rol() === 'jefe' ? '.' : ' (solo el jefe las ve) y ya no podrás corregirla.') + '\n¿Continuar?')) return;
+            }
+            rec.id = editId || uid();
+            var key = current, esEdicion = !!editId, btn = form.querySelector('button[type=submit]');
+            btn.disabled = true;
+            api('PUT', '/api/datos/' + key + '/' + encodeURIComponent(rec.id), rec).then(function (r) {
+                btn.disabled = false;
+                if (!r.ok) { msg(r.data.error || 'No se pudo guardar en el servidor. Intenta de nuevo.', 'danger'); return; }
+                syncDB(function () {
+                    renderPanel(key);
+                    msg(esEdicion ? 'Registro actualizado correctamente.' : 'Registro guardado correctamente.', 'success');
+                });
+            });
+        });
+        /* ==================== FIN C5: PANEL ==================== */
+
+
+        /* ==============================================================
+           INICIO C5b: HISTORIAL DE TRABAJOS y GANANCIAS (solo el jefe)
+           - Historial: todos los trabajos con sus precios (aparecen solos).
+           - Ganancias: lo cobrado en trabajos ENTREGADOS, por semana o por mes.
+           ============================================================== */
+        function fechaE(o) { return o.fechaEntrega || o.ingreso || ''; }
+        function textoOrden(o) {
+            var v = find('vehiculos', o.vehiculoId);
+            return norm((v ? v.placa + ' ' + v.marca + ' ' + v.modelo : '') + ' ' + nombreCliente(o.clienteId) + ' ' + nombreMec(o.mecanicoId));
+        }
+        function lunesDe(iso) {
+            var d = new Date(iso); d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+            return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+        }
+        function etiquetaSemana(k) {
+            var p = k.split('-'), a = new Date(+p[0], +p[1] - 1, +p[2]), b = new Date(a); b.setDate(b.getDate() + 6);
+            return 'Del ' + pad2(a.getDate()) + '/' + pad2(a.getMonth() + 1) + ' al ' + pad2(b.getDate()) + '/' + pad2(b.getMonth() + 1) + '/' + b.getFullYear();
+        }
+        function sumar(l) {
+            var r = { n: l.length, mo: 0, rep: 0, total: 0 };
+            l.forEach(function (o) { var v = valoresOrden(o); r.mo += v.mo; r.rep += v.rep; r.total += v.total; });
+            return r;
+        }
+
+        // Tarjeta de una orden (la usa el Historial del administrador)
+        function htmlOrden(o, acciones) {
+            var v = valoresOrden(o), ent = o.estado === 'Entregado';
+            var reps = (o.items || []).map(function (i) {
+                return esc(i.nombre) + ' (' + fmtBs(i.precio) + ')';
+            }).join(' · ');
+            var rp = o.modalidad === 'mano' ? 'Solo mano de obra (repuestos del cliente)'
+                : ((o.repuestos || []).map(function (x) { return esc(x.nombre) + ' ×' + x.cantidad + ' (' + fmtBs(x.precio * x.cantidad) + ')'; }).join(' · ') || 'Sin repuestos');
+            return '<div class="reg-item"><div class="reg-main"><div class="reg-title">' + esc(textoVeh(o.vehiculoId)) + ' · <span class="text-dorado">' + fmtBs(v.total) + '</span></div>' +
+                '<div class="reg-det">' + esc(nombreCliente(o.clienteId)) + ' · Mecánico: ' + esc(nombreMec(o.mecanicoId)) + '<br>' + badge(o.estado) +
+                (o.fechaEstimada && !ent ? ' · Entrega estimada: ' + esc(fmtF(o.fechaEstimada)) : '') +
+                '<br><b>Reparaciones:</b> ' + (reps || '—') + '<br><b>Repuestos:</b> ' + rp +
+                '<br>Mano de obra ' + fmtBs(v.mo) + ' + Repuestos ' + fmtBs(v.rep) + ' = <b>' + fmtBs(v.total) + '</b>' +
+                '<br>Ingreso: ' + esc(fmtF(o.ingreso)) + (ent ? ' · Entregado: ' + esc(fmtF(fechaE(o))) : '') + '</div></div>' +
+                '<div class="reg-actions">' + (acciones || '') + '</div></div>';
+        }
+        function payloadOrden(o, estado) {
+            return {
+                clienteId: o.clienteId, vehiculoId: o.vehiculoId, mecanicoId: o.mecanicoId, servicios: o.servicios,
+                modalidad: o.modalidad || 'completa',
+                repuestos: (o.repuestos || []).map(function (x) { return { id: x.id, cantidad: x.cantidad }; }),
+                estado: estado, fechaEstimada: o.fechaEstimada || ''
+            };
+        }
+
+        function renderHistorial(conFoco) {
+            var box = $('#panel-hist'), all = db.ordenes.slice(), q = norm(H.q);
+            var cuenta = { todos: all.length, curso: all.filter(function (o) { return o.estado !== 'Entregado'; }).length };
+            cuenta.entregados = all.length - cuenta.curso;
+            var filt = all.filter(function (o) {
+                var okE = H.estado === 'todos' || (H.estado === 'curso' ? o.estado !== 'Entregado' : o.estado === 'Entregado');
+                return okE && (!q || textoOrden(o).indexOf(q) !== -1);
+            }).sort(function (a, b) { return (b.ingreso || '').localeCompare(a.ingreso || ''); });
+            var chip = function (k, t, n) { return '<button type="button" class="chip-st st-ok' + (H.estado === k ? ' sel' : '') + '" data-hest="' + k + '">' + t + ' (' + n + ')</button>'; };
+            var h = '<div class="d-flex flex-wrap gap-2 mb-2">' + chip('todos', 'Todos', cuenta.todos) + chip('curso', 'En curso', cuenta.curso) + chip('entregados', 'Entregados', cuenta.entregados) + '</div>' +
+                '<input type="search" class="form-control form-control-sm mb-2" id="h-q" placeholder="Buscar placa, cliente o mecánico…" value="' + esc(H.q) + '" autocomplete="off">' +
+                '<p class="small text-suave">Cada orden aparece aquí automáticamente cuando se registra. Cuando el cliente recoge su vehículo, toca <b>✔ Entregar</b>.</p>';
+            h += filt.length ? '<div class="records-box">' + filt.map(function (o) {
+                var acc = o.estado === 'Entregado'
+                    ? '<button type="button" class="btn btn-sm btn-outline-warning py-0" data-reabrir="' + esc(o.id) + '" title="Reabrir orden"><i class="bi bi-arrow-counterclockwise"></i></button>'
+                    : '<button type="button" class="btn btn-sm btn-success py-0" data-entregar="' + esc(o.id) + '" title="Marcar como entregado">✔ Entregar</button>';
+                return htmlOrden(o, acc);
+            }).join('') + '</div>' : '<p class="text-suave small mb-0">No hay trabajos con ese filtro.</p>';
+            box.innerHTML = h;
+            if (conFoco) { var qi = $('#h-q'); qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); }
+        }
+
+        var DIAS_SEM = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        function etiquetaDia(k) {
+            var p = k.split('-');
+            return DIAS_SEM[new Date(+p[0], +p[1] - 1, +p[2]).getDay()] + ' ' + pad2(+p[2]) + '/' + pad2(+p[1]) + '/' + p[0];
+        }
+        function renderGanancias() {
+            var box = $('#panel-hist'), ents = db.ordenes.filter(function (o) { return o.estado === 'Entregado'; });
+            var ahora = new Date().toISOString(), hoy = diaDe(ahora), semA = lunesDe(ahora), mesA = mesDe(ahora);
+            var modo = G.dia ? 'dia' : G.modo;
+            var tarj = function (t, v) { return '<div class="col-6"><div class="stat-mini"><div class="etq">' + t + '</div><div class="val">' + fmtBs(v) + '</div></div></div>'; };
+            var h = '<div class="row g-2 mb-3">' +
+                tarj('Hoy', sumar(ents.filter(function (o) { return diaDe(fechaE(o)) === hoy; })).total) +
+                tarj('Esta semana', sumar(ents.filter(function (o) { return lunesDe(fechaE(o)) === semA; })).total) +
+                tarj('Este mes', sumar(ents.filter(function (o) { return mesDe(fechaE(o)) === mesA; })).total) +
+                tarj('Total', sumar(ents).total) + '</div>';
+            var chipG = function (k, t) { return '<button type="button" class="chip-st st-ok' + (modo === k ? ' sel' : '') + '" data-gmodo="' + k + '">' + t + '</button>'; };
+            h += '<div class="d-flex gap-2 mb-2 flex-wrap">' + chipG('dia', 'Por día') + chipG('semana', 'Por semana') + chipG('mes', 'Por mes') + '</div>' +
+                '<div class="row g-2 mb-3">' +
+                '<div class="col-6"><label class="form-label small text-suave mb-1" for="g-dia">Elegir un día</label><input type="date" class="form-control form-control-sm" id="g-dia" value="' + esc(G.dia) + '"></div>' +
+                '<div class="col-6"><label class="form-label small text-suave mb-1" for="g-mes">Elegir un mes</label><input type="month" class="form-control form-control-sm" id="g-mes" value="' + esc(G.mes) + '"></div>' +
+                '<div class="col-12"><button type="button" class="btn btn-sm btn-outline-warning w-100" id="g-todos">Ver todos los períodos</button></div></div>';
+            var filt = ents.filter(function (o) {
+                var f = fechaE(o);
+                return (!G.mes || mesDe(f) === G.mes) && (!G.dia || diaDe(f) === G.dia);
+            });
+            var grupos = {}, claves;
+            filt.forEach(function (o) {
+                var f = fechaE(o), k = modo === 'dia' ? diaDe(f) : (modo === 'semana' ? lunesDe(f) : mesDe(f));
+                (grupos[k] = grupos[k] || []).push(o);
+            });
+            claves = Object.keys(grupos).sort().reverse();
+            if (!claves.length) h += '<p class="text-suave small">Aún no hay trabajos entregados en este período.</p>';
+            else h += claves.map(function (k) {
+                var s = sumar(grupos[k]), tit = modo === 'dia' ? etiquetaDia(k) : (modo === 'semana' ? etiquetaSemana(k) : mesNombre(k));
+                var enlace = modo === 'mes' ? 'data-gmes="' + k + '"' : (modo === 'dia' && !G.dia ? 'data-gdia="' + k + '"' : '');
+                return '<' + (enlace ? 'a href="#" ' + enlace : 'div') + ' class="fila-ganancia">' +
+                    '<div class="d-flex justify-content-between"><span class="fw-bold">' + tit + ' <small class="text-suave">(' + s.n + ' trabajo/s)</small></span><b class="text-dorado">' + fmtBs(s.total) + '</b></div>' +
+                    '<div class="small text-suave">Mano de obra ' + fmtBs(s.mo) + ' · Repuestos ' + fmtBs(s.rep) + '</div></' + (enlace ? 'a' : 'div') + '>';
+            }).join('');
+            var t = sumar(filt);
+            h += '<div class="resumen-periodo mt-3"><div class="etq">GANANCIA TOTAL · ' + (G.dia ? etiquetaDia(G.dia) : (G.mes ? mesNombre(G.mes) : 'todos los períodos')) + '</div>' +
+                '<div class="fs-4 fw-bold text-dorado">' + fmtBs(t.total) + '</div>' +
+                '<div class="small text-suave">' + t.n + ' trabajo(s) · Mano de obra ' + fmtBs(t.mo) + ' · Repuestos ' + fmtBs(t.rep) + '</div></div>';
+            if (G.dia && filt.length) {          // detalle de los trabajos de ese día
+                h += '<h6 class="fw-bold mt-3"><i class="bi bi-list-check me-1 text-dorado"></i>Trabajos de ese día</h6><div class="records-box">' +
+                    filt.map(function (o) { return htmlOrden(o, ''); }).join('') + '</div>';
+            }
+            box.innerHTML = h;
+        }
+
+        $('#panel-hist').addEventListener('click', function (e) {
+            var c;
+            if ((c = e.target.closest('[data-hest]'))) { H.estado = c.getAttribute('data-hest'); renderHistorial(); return; }
+            if ((c = e.target.closest('[data-gmodo]'))) { G.modo = c.getAttribute('data-gmodo'); G.dia = ''; renderGanancias(); return; }
+            if ((c = e.target.closest('[data-gmes]'))) { e.preventDefault(); G.mes = c.getAttribute('data-gmes'); G.dia = ''; G.modo = 'dia'; renderGanancias(); return; }
+            if ((c = e.target.closest('[data-gdia]'))) { e.preventDefault(); G.dia = c.getAttribute('data-gdia'); G.mes = ''; G.modo = 'dia'; renderGanancias(); return; }
+            if (e.target.closest('#g-todos')) { G.mes = ''; G.dia = ''; renderGanancias(); return; }
+            var b = e.target.closest('[data-reabrir]'), en = e.target.closest('[data-entregar]');
+            if (!b && !en) return;
+            var o = find('ordenes', (b || en).getAttribute(b ? 'data-reabrir' : 'data-entregar'));
+            if (!o) return;
+            var nuevo = b ? 'Listo para entrega' : 'Entregado';
+            var txt = b ? '¿Reabrir esta orden? Volverá a «Listo para entrega» y el empleado podrá verla y corregirla.'
+                : '¿Marcar como ENTREGADA la orden de ' + textoVeh(o.vehiculoId) + '?\nEstado actual: ' + o.estado + '.\nPasará a Ganancias y el empleado ya no podrá corregirla.';
+            if (!confirm(txt)) return;
+            api('PUT', '/api/datos/ordenes/' + encodeURIComponent(o.id), payloadOrden(o, nuevo)).then(function (r) {
+                if (!r.ok) { msg(r.data.error || 'No se pudo actualizar la orden.', 'danger'); return; }
+                syncDB(function () { renderHistorial(); msg(b ? 'Orden reabierta: vuelve a «Listo para entrega».' : 'Orden entregada. Ya cuenta en Ganancias.', 'success'); });
+            });
+        });
+        $('#panel-hist').addEventListener('change', function (e) {
+            if (e.target.id === 'g-mes') { G.mes = e.target.value; G.dia = ''; renderGanancias(); }
+            if (e.target.id === 'g-dia') { G.dia = e.target.value; if (G.dia) { G.mes = ''; G.modo = 'dia'; } renderGanancias(); }
+        });
+        /* ==================== FIN C5b ==================== */
+
+
+        /* ==============================================================
+           INICIO C6: CONSULTA PÚBLICA (solo con la placa)
+           La placa tiene SIEMPRE 4 números y 3 letras en mayúscula.
+           ============================================================== */
+        function renderResultado(o) {
+            var ul = (o.servicios || []).length ? '<ul class="mb-0 ps-3">' + o.servicios.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '<div>—</div>';
+            return '<div class="resultado">' +
+                '<div class="etq">Vehículo</div><div class="fw-bold">' + esc(o.vehiculo + ' · ' + o.placa) + '</div>' +
+                '<div class="etq">Diagnóstico</div><div>' + esc(o.diagnostico || 'Aún sin diagnóstico registrado') + '</div>' +
+                '<div class="etq">Reparaciones</div>' + ul +
+                '<div class="etq">Mecánico a cargo</div><div>' + esc(o.mecanico || '—') + '</div>' +
+                '<div class="etq">Tipo de trabajo</div><div>' + (o.modalidad === 'mano' ? 'Solo mano de obra' : 'Reparación completa (mano de obra y repuestos)') + '</div>' +
+                '<div class="etq">Monto a pagar</div><div class="fw-bold">' + esc(fmtBs(o.total)) + '</div>' +
+                '<div class="etq">Estado actual</div><span class="badge text-bg-' + (ESTADO_COLOR[o.estado] || 'secondary') + ' fs-6">' + esc(o.estado) + '</span>' +
+                '<div class="etq">Fecha de ingreso</div><div>' + esc(fmtF(o.ingreso)) + '</div>' +
+                '<div class="etq">Entrega estimada</div><div>' + esc(o.fechaEstimada ? fmtF(o.fechaEstimada) : 'Por definir') + '</div>' +
+                (o.fechaEntrega ? '<div class="etq">Fecha de entrega</div><div>' + esc(fmtF(o.fechaEntrega)) + '</div>' : '') +
+                '</div>';
+        }
+        $('#form-consulta').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var out = $('#consulta-result'), inp = $('#c-placa'), placa = inp.value.trim().toUpperCase();
+            if (!RE_PLACA.test(placa)) {
+                inp.classList.add('is-invalid');
+                out.innerHTML = alerta('warning', 'La placa debe tener 4 números y 3 letras en mayúscula (ejemplo: 1234ABC).');
+                return;
+            }
+            inp.classList.remove('is-invalid');
+            out.innerHTML = '<div class="text-center text-suave small py-2"><span class="spinner-border spinner-border-sm me-2"></span>Buscando…</div>';
+            api('GET', '/api/consulta/' + placa).then(function (r) {
+                if (!r.ok) { out.innerHTML = alerta(r.status === 404 ? 'warning' : 'danger', r.data.error || 'No se pudo consultar. Intenta de nuevo.'); return; }
+                out.innerHTML = r.data.map(renderResultado).join('');
+            });
+        });
+        /* ==================== FIN C6: CONSULTA PÚBLICA ==================== */
+
+
+        /* ==============================================================
+           INICIO C7: LOGO
+           Pone tu logo (guardado al final del archivo, bloque C8) en todas
+           las imágenes con class="logo" y también en la pestaña del navegador.
+           ============================================================== */
+        window.addEventListener('DOMContentLoaded', function () {
+            var src = window.RIC_LOGO;
+            if (!src) return;
+            document.querySelectorAll('img.logo').forEach(function (img) { img.src = src; });
+            var fav = document.createElement('link');
+            fav.rel = 'icon'; fav.href = src;
+            document.head.appendChild(fav);
+        });
+        /* ==================== FIN C7: LOGO ==================== */
+
+
+        /* ---------- Altura real del menú (evita que tape el contenido al saltar) ---------- */
+        var navbarEl = document.querySelector('.navbar-custom');
+        function ajustarAlturaMenu() {
+            document.documentElement.style.setProperty('--nav-h', navbarEl.offsetHeight + 'px');
+        }
+        ajustarAlturaMenu();
+        window.addEventListener('resize', ajustarAlturaMenu);
+        if (window.ResizeObserver) { new ResizeObserver(ajustarAlturaMenu).observe(navbarEl); }
+        document.getElementById('navbarNav').addEventListener('shown.bs.collapse', ajustarAlturaMenu);
+        document.getElementById('navbarNav').addEventListener('hidden.bs.collapse', ajustarAlturaMenu);
+
+        /* ---------- Actualización automática (casi tiempo real, cada 8 s) ---------- */
+        function refrescarOpciones() {
+            var f = $('#panel-form'), m = MOD[current];
+            if (editId || m.special || f.contains(document.activeElement)) return;
+            m.fields.forEach(function (fd) {
+                if (fd.type === 'select' && !fd.options) llenarSelect(fd, f, f.elements[fd.id].value || null);
+                if (fd.type === 'multi') marcarMulti(fd.id, marcados(fd.id));
+                if (fd.type === 'repuestos') {
+                    var mp = {};
+                    leerRepuestos().forEach(function (x) { mp[x.id] = x.cantidad; });
+                    $('#f_' + fd.id).innerHTML = repuestosItems(mp); aplicarModalidad();
+                }
+            });
+        }
+        setInterval(function () {
+            if (document.hidden || !isAuth() || $('#view-panel').classList.contains('d-none')) return;
+            var ae = document.activeElement;
+            var escribiendo = ae && /INPUT|TEXTAREA|SELECT/.test(ae.tagName);
+            syncDB(function (ok) {
+                if (!ok || escribiendo) return;
+                if (MOD[current].special) RENDER_ESPECIAL[MOD[current].special](); else { renderRecords(); refrescarOpciones(); }
+            });
+        }, 8000);
+
+        /* ---------- Portada: carrusel de fotos (para agregar fotos: ponlas en la carpeta img y escribe su nombre aquí) ---------- */
+        var FOTOS_PORTADA = ['img/herramientas.webp', 'img/repuestos.webp', 'img/ambulancia.webp', 'img/auto.webp'];
+        (function () {
+            var cont = $('#hero-carrusel'), pts = $('#hero-puntos'), idx = 0;
+            if (!cont || !FOTOS_PORTADA.length) return;
+            FOTOS_PORTADA.forEach(function (f, i) {
+                var d = document.createElement('div'); d.className = 'hero-slide' + (i === 0 ? ' activa' : ''); d.style.backgroundImage = 'url("' + f + '")'; cont.appendChild(d);
+                var b = document.createElement('button'); b.type = 'button'; b.className = 'hero-punto' + (i === 0 ? ' activa' : ''); b.setAttribute('aria-label', 'Foto ' + (i + 1));
+                b.addEventListener('click', function () { ir(i); }); pts.appendChild(b);
+            });
+            function ir(n) {
+                var sl = $$('.hero-slide', cont), dt = $$('.hero-punto', pts);
+                idx = (n + sl.length) % sl.length;
+                sl.forEach(function (x, i) { x.classList.toggle('activa', i === idx); });
+                dt.forEach(function (x, i) { x.classList.toggle('activa', i === idx); });
+            }
+            setInterval(function () { if (!document.hidden) ir(idx + 1); }, 5500);
+        })();
+
+        /* ---------- Arranque: muestra el sitio público ---------- */
+        showView('home');
+    })();
+    </script>
+
+    <!-- =====================================================================
+         INICIO C8: RUTA DEL LOGO
+         El logo se carga desde la carpeta img (img/logo.webp), que debe
+         estar siempre junto a este archivo HTML. Si cambias el nombre o
+         la ubicación del logo, actualiza la ruta entre las comillas.
+         ===================================================================== -->
+    <script>window.RIC_LOGO = "img/logo.webp";</script>
+    <!-- ===================== FIN C8: RUTA DEL LOGO ===================== -->
+
+</body>
+</html>
